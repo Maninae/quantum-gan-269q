@@ -1,0 +1,2 @@
+pennylane==0.3.1
+pennylane-forest==0.1.1
