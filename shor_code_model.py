@@ -7,11 +7,15 @@ from pyquil.gates import CNOT, H, X, Z, NOP
 from pyquil.quil import address_qubits
 from pyquil.quilatom import QubitPlaceholder
 from pyquil.api import QVMConnection
+from pyquil.api import WavefunctionSimulator
+from pyquil import get_qc
+
+
 
 ##
 ############# YOU MUST COMMENT OUT THESE TWO LINES FOR IT TO WORK WITH THE AUTOGRADER
-import subprocess
-subprocess.Popen("/src/qvm/qvm -S > qvm.log 2>&1", shell=True)
+# import subprocess
+# subprocess.Popen("/src/qvm/qvm -S > qvm.log 2>&1", shell=True)
 
 
 # Do not change this SEED value you or your autograder score will be incorrect.
@@ -399,6 +403,40 @@ def simulate_code(kraus_operators, trials, error_code) -> int:
     print(score)
 
     return score
+
+
+
+def real_shor_code():
+    """
+       :param kraus_operators: The set of Kraus operators to apply as the noise model on the identity gate
+       :param trials: The number of times to simulate the program
+       :param error_code: The error code {bit_code, phase_code or shor} to use
+       :return: The 9 qbits shor code is supposed to return in this case
+       """
+    # Apply the error_code to some qubits and return back a Program pq
+    qc = get_qc('10q-qvm')
+
+    kraus_operators = depolarizing_channel(0.1)
+    pq, code_register = shor(QubitPlaceholder(), noise=None)
+
+    # THIS CODE APPLIES THE NOISE FOR YOU
+    kraus_ops = kraus_operators
+    noise_data = Program()
+    for qq in range(3):
+        noise_data.define_noisy_gate("I", [qq], kraus_ops)
+    pq = noise_data + pq
+
+    # wf_sim = WavefunctionSimulator()
+    # wf_sim.wavefunction(pq)
+    # qvm.run(address_qubits(pq), trials=1)
+
+    trial_results = qc.run(address_qubits(pq))
+
+
+    # Run the simulation trials times using the QVM and check how many times it did not work
+    # return that as the score. E.g. if it always corrected back to the 0 state then it should return 0.
+
+    return code_register
 
 # Use this as the noise() function parameter to manually just apply a phase shift to the first qbit only
 def apply_z_to_first(code_register):

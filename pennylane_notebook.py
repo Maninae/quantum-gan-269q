@@ -1,111 +1,73 @@
 import pennylane as qml
+
 from pennylane import numpy as np
 from pennylane.optimize import GradientDescentOptimizer
 from pennylane.ops import Hadamard, RX, CNOT
-####################################################################################
-
-
-dev = qml.device('default.qubit', wires=2)
-
-def quantum_gradient_descent_demo():
-
-    # Declare quantum circuit
-    @qml.qnode(dev)
-    def circuit(theta1, theta2):
-        Hadamard(wires=1)
-        RX(theta1, wires=0)
-        RX(theta2, wires=1)
-        CNOT(wires=[0,1])
-        return qml.expval.PauliZ(wires=0)
-    """    To design other circuits, we have
-            Pennylane other gates:      qml.ops.qubit.all_ops
-            Pennylane measurement ops:  qml.expval.qubit.all_ops
-    """
-
-    # We can evaluate the circuit at any value of the parameters
-    print(circuit(0, 0))
-    for theta1, theta2 in np.random.random((5,2)):
-        print(circuit(theta1, theta2))
-    """ 0.9999999999999998
-        0.5955486271678074
-        0.9641638120309893... [5 total]
-    """
-
-    grad_circuit = qml.grad(circuit, argnum=[0,1])
-    # We can evaluate the circuit gradient at any value of the parameters
-    for theta1, theta2 in np.random.random((5,2)):
-        print("Value: ({:3f},{:3f}); Gradient={}".format(theta1, theta2, 
-                                                 np.stack(grad_circuit(theta1, theta2))))
-    """ Value: (0.194877,0.991503); Gradient=[-1.93645932e-01 -5.55111512e-17]
-        Value: (0.642381,0.922974); Gradient=[-0.5991039  0.       ]
-        Value: (0.102674,0.684560); Gradient=[-1.02494172e-01 -1.66533454e-16]
-        Value: (0.041783,0.109417); Gradient=[-4.17708740e-02  1.11022302e-16]
-        Value: (0.039356,0.880646); Gradient=[-3.93455645e-02 -1.66533454e-16]
-    """
-
-    eta = 0.1
-    opt = GradientDescentOptimizer(eta)
-    # Other pennylane optimizers:   qml.optimize.__all__
-
-    init_val = np.random.random(2)
-    new_val = opt.step(circuit, init_val)
-    print("Initial value:", init_val)
-    print("Value after one step:", new_val)
-
-
-    # Define a classical cost function which post-processes the circuit's output
-    target = 0.33
-    def cost(weights):
-        expval = circuit(weights[0], weights[1])
-        error = np.abs(expval - target) ** 2 + weights[2] ** 2
-        return error
-
-    # Evaluate cost at a random starting point
-    weights = np.random.random(3)
-    print(cost(weights))
-
-    # Implement gradient descent over 100 steps
-    for step in range(100):
-        weights = opt.step(cost, weights)
-        if step % 10 == 0:
-            print("Step {}: Cost={}".format(step, cost(weights)))
+from shor_code_model import real_shor_code
+from pyquil.api import WavefunctionSimulator
 
 ####################################################################################
 
-gan_dev = qml.device('default.qubit', wires=3)
 
-def quantum_gan_demo():
+# dev = qml.device('default.qubit', wires=2)
 
+gan_dev = qml.device('default.qubit', wires=10)
+
+    # qml.device('12q-pyqvm', wires=9)
+
+def quantum_gan_model():
+
+    num_qbits = 9
+    workspace_wire = 9
+
+
+    # TODO: Maybe make a "ShorCode" class for this part
+    # Change this to give the data from the output of the Shore Code algorithm
     # Generate "real" (i.e. fixed) data
     def real(phi, theta, omega):
-        qml.Rot(phi, theta, omega, wires=0)
+
+        pyquil_qbits = real_shor_code()
+
+
+        # qml.Rot(phi, theta, omega, wires=0)
 
     # Note: the structure of these circuits is more-or-less chosen arbitrarily. There is 
 # nothing particular about these choices of generator or discriminator
 
     def generator(w):
-        qml.RX(w[0], wires=0)
-        qml.RX(w[1], wires=1)
-        qml.RY(w[2], wires=0)
-        qml.RY(w[3], wires=1)
-        qml.RZ(w[4], wires=0)
-        qml.RZ(w[5], wires=1)
-        qml.CNOT(wires=[0,1])
-        qml.RX(w[6], wires=0)
-        qml.RY(w[7], wires=0)
-        qml.RZ(w[8], wires=0)
+
+        # Wires 0 to 8 to hold generator output
+
+        # entagle qbits 0 to 8
+        for i in range(num_qbits):
+            first = i
+            second = workspace_wire
+            qml.RX(w[0], wires=first)
+            qml.RX(w[1], wires=second)
+            qml.RY(w[2], wires=first)
+            qml.RY(w[3], wires=second)
+            qml.RZ(w[4], wires=first)
+            qml.RZ(w[5], wires=second)
+            qml.CNOT(wires=[first,second])
+            qml.RX(w[6], wires=first)
+            qml.RY(w[7], wires=first)
+            qml.RZ(w[8], wires=first)
         
     def discriminator(w):
-        qml.RX(w[0], wires=0)
-        qml.RX(w[1], wires=2)
-        qml.RY(w[2], wires=0)
-        qml.RY(w[3], wires=2)
-        qml.RZ(w[4], wires=0)
-        qml.RZ(w[5], wires=2)
-        qml.CNOT(wires=[1,2])
-        qml.RX(w[6], wires=2)
-        qml.RY(w[7], wires=2)
-        qml.RZ(w[8], wires=2)
+        # entagle qbits 0 to 8
+
+        for i in range(num_qbits):
+            curr_input_wire = i
+            qml.RX(w[0], wires=curr_input_wire)
+            qml.RX(w[1], wires=workspace_wire)
+            qml.RY(w[2], wires=curr_input_wire)
+            qml.RY(w[3], wires=workspace_wire)
+            qml.RZ(w[4], wires=curr_input_wire)
+            qml.RZ(w[5], wires=workspace_wire)
+            qml.CNOT(wires=[1,workspace_wire])
+            qml.RX(w[6], wires=workspace_wire)
+            qml.RY(w[7], wires=workspace_wire)
+            qml.RZ(w[8], wires=workspace_wire)
 
     # Create 2 QNodes (i.e. circuits) for the Gen and Disc.
     @qml.qnode(gan_dev)
@@ -157,6 +119,8 @@ def quantum_gan_demo():
     eps = 1e-2
 
     # Generator G and Discriminator D weights
+
+    #TODO: consider a different initialization for the generator weights here
     gen_weights = np.array([np.pi] + [0] * 8) + np.random.normal(scale=eps, size=[9])
     disc_weights = np.random.normal(size=[9])
     
@@ -191,6 +155,6 @@ def quantum_gan_demo():
 
 if __name__ == "__main__":
     # quantum_gradient_descent_demo()
-    quantum_gan_demo()
+    quantum_gan_model()
 
 
