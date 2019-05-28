@@ -11,7 +11,10 @@ from pyquil.api import WavefunctionSimulator
 
 # dev = qml.device('default.qubit', wires=2)
 
-gan_dev = qml.device('forest.qvm', device='10q-pyqvm')
+gan_dev = qml.device('forest.qvm', device='10q-pyqvm', shots=1000)
+
+
+def make_shor_encoding():
 
     # qml.device('12q-pyqvm', wires=9)
 
@@ -35,7 +38,7 @@ def quantum_gan_model():
     def real(phi, theta, omega):
 
         #TODO: need to validate that the output of this Shor code is placed on these first 9 bits
-        # pyquil_qbits = real_shor_code()
+        pyquil_qbits = real_shor_code()
 
         for i in range(num_qbits):
             qml.Rot(phi, theta, omega, wires=i)
