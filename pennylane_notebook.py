@@ -11,14 +11,22 @@ from pyquil.api import WavefunctionSimulator
 
 # dev = qml.device('default.qubit', wires=2)
 
-gan_dev = qml.device('default.qubit', wires=10)
+gan_dev = qml.device('forest.qvm', device='10q-pyqvm')
 
     # qml.device('12q-pyqvm', wires=9)
 
 def quantum_gan_model():
 
-    num_qbits = 9
-    workspace_wire = 9
+    #[0, 1, 2]
+    num_qbits = 2
+
+
+    #[3]
+    workspace_wire = 2
+
+    #[4]
+    discrimantor_output = workspace_wire + 1
+
 
 
     # TODO: Maybe make a "ShorCode" class for this part
@@ -26,18 +34,17 @@ def quantum_gan_model():
     # Generate "real" (i.e. fixed) data
     def real(phi, theta, omega):
 
-        pyquil_qbits = real_shor_code()
+        #TODO: need to validate that the output of this Shor code is placed on these first 9 bits
+        # pyquil_qbits = real_shor_code()
 
-
-        # qml.Rot(phi, theta, omega, wires=0)
+        for i in range(num_qbits):
+            qml.Rot(phi, theta, omega, wires=i)
 
     # Note: the structure of these circuits is more-or-less chosen arbitrarily. There is 
 # nothing particular about these choices of generator or discriminator
 
     def generator(w):
-
         # Wires 0 to 8 to hold generator output
-
         # entagle qbits 0 to 8
         for i in range(num_qbits):
             first = i
@@ -59,28 +66,33 @@ def quantum_gan_model():
         for i in range(num_qbits):
             curr_input_wire = i
             qml.RX(w[0], wires=curr_input_wire)
-            qml.RX(w[1], wires=workspace_wire)
+            qml.RX(w[1], wires=discrimantor_output)
             qml.RY(w[2], wires=curr_input_wire)
-            qml.RY(w[3], wires=workspace_wire)
+            qml.RY(w[3], wires=discrimantor_output)
             qml.RZ(w[4], wires=curr_input_wire)
-            qml.RZ(w[5], wires=workspace_wire)
-            qml.CNOT(wires=[1,workspace_wire])
-            qml.RX(w[6], wires=workspace_wire)
-            qml.RY(w[7], wires=workspace_wire)
-            qml.RZ(w[8], wires=workspace_wire)
+            qml.RZ(w[5], wires=discrimantor_output)
+            # CNOT was here before
+            qml.RX(w[6], wires=discrimantor_output)
+            qml.RY(w[7], wires=discrimantor_output)
+            qml.RZ(w[8], wires=discrimantor_output)
+
+        qml.CNOT(wires=[workspace_wire,discrimantor_output])
+        # qml.RX(w[6], wires=discrimantor_output)
+        # qml.RY(w[7], wires=discrimantor_output)
+        # qml.RZ(w[8], wires=discrimantor_output)
 
     # Create 2 QNodes (i.e. circuits) for the Gen and Disc.
     @qml.qnode(gan_dev)
     def real_disc_circuit(phi, theta, omega, disc_weights):  # Run Discriminator on real data
         real(phi, theta, omega)
         discriminator(disc_weights)
-        return qml.expval.PauliZ(2)
+        return qml.expval.PauliZ(discrimantor_output)
 
     @qml.qnode(gan_dev)
     def gen_disc_circuit(gen_weights, disc_weights):         # Run Discriminator on FAKE data
         generator(gen_weights)
         discriminator(disc_weights)
-        return qml.expval.PauliZ(2)
+        return qml.expval.PauliZ(discrimantor_output)
 
     """ All of the losses! 4 components: 
           (1) Probability discriminator says real data is real
@@ -125,14 +137,14 @@ def quantum_gan_model():
     disc_weights = np.random.normal(size=[9])
     
     # Create an optimizer
-    opt = GradientDescentOptimizer(0.1)
+    opt = GradientDescentOptimizer(0.2)
 
     # Optimize D, fix G
     for it in range(50):
         disc_weights = opt.step(disc_cost, disc_weights) 
         cost = disc_cost(disc_weights)
-        if it % 5 == 0:
-            print("Step {}: cost = {}".format(it+1, cost))
+        # if it % 1 == 0:
+        print("Step {}: cost = {}".format(it+1, cost))
 
     # Discriminator good now, generator pretty poor
     # Close to 1, 0 respectively.
