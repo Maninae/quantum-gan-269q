@@ -18,6 +18,15 @@ def make_shor_encoding():
 
     # qml.device('12q-pyqvm', wires=9)
 
+
+def add_noise(qubits, level=1):
+    pass
+    # Use noisy identity gates "level" times, on every qubit in qubit
+
+
+
+##@@@@@@@@@@@@@@@@@@
+
 def quantum_gan_model():
 
     #[0, 1, 2]
@@ -44,7 +53,7 @@ def quantum_gan_model():
             qml.Rot(phi, theta, omega, wires=i)
 
     # Note: the structure of these circuits is more-or-less chosen arbitrarily. There is 
-# nothing particular about these choices of generator or discriminator
+    # nothing particular about these choices of generator or discriminator
 
     def generator(w):
         # Wires 0 to 8 to hold generator output
@@ -53,12 +62,15 @@ def quantum_gan_model():
             first = i
             second = workspace_wire
             qml.RX(w[0], wires=first)
-            qml.RX(w[1], wires=second)
             qml.RY(w[2], wires=first)
-            qml.RY(w[3], wires=second)
             qml.RZ(w[4], wires=first)
+
+            qml.RX(w[1], wires=second)
+            qml.RY(w[3], wires=second)
             qml.RZ(w[5], wires=second)
+            
             qml.CNOT(wires=[first,second])
+
             qml.RX(w[6], wires=first)
             qml.RY(w[7], wires=first)
             qml.RZ(w[8], wires=first)
