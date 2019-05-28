@@ -4,6 +4,7 @@
     <list default="true" id="0f59acfc-495d-4c59-a807-e3c9ed5514e8" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pennylane_notebook.py" afterPath="$PROJECT_DIR$/pennylane_notebook.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/quantum_nn.py" afterPath="$PROJECT_DIR$/quantum_nn.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -27,11 +28,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="pennylane_notebook.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="pennylane_notebook.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pennylane_notebook.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="16" column="25" lean-forward="false" selection-start-line="16" selection-start-column="25" selection-end-line="16" selection-end-column="25" />
+            <state relative-caret-position="291">
+              <caret line="164" column="54" lean-forward="true" selection-start-line="159" selection-start-column="4" selection-end-line="164" selection-end-column="54" />
+              <folding>
+                <element signature="e#0#23#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="quantum_nn.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/quantum_nn.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="472">
+              <caret line="103" column="15" lean-forward="true" selection-start-line="103" selection-start-column="15" selection-end-line="103" selection-end-column="15" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -241,8 +254,8 @@
       <find>address_abi</find>
       <find>phi</find>
       <find>disc_cost</find>
-      <find>disc_lo</find>
       <find>wires</find>
+      <find>disc_lo</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -253,6 +266,7 @@
       <list>
         <option value="$PROJECT_DIR$/shor_code_model.py" />
         <option value="$PROJECT_DIR$/pennylane_notebook.py" />
+        <option value="$PROJECT_DIR$/quantum_nn.py" />
       </list>
     </option>
   </component>
@@ -306,7 +320,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.pennylane_notebook">
+  <component name="RunManager" selected="Python.quantum_nn">
     <configuration name="pennylane_notebook" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -320,6 +334,23 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="quantum-gan-269q" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pennylane_notebook.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <configuration name="quantum_nn" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/anaconda/envs/cs20_tensorflow/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="quantum-gan-269q" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/quantum_nn.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -341,14 +372,16 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
-    <list size="2">
+    <list size="3">
       <item index="0" class="java.lang.String" itemvalue="Python.pennylane_notebook" />
       <item index="1" class="java.lang.String" itemvalue="Python.shor_code_model" />
+      <item index="2" class="java.lang.String" itemvalue="Python.quantum_nn" />
     </list>
     <recent_temporary>
-      <list size="2">
-        <item index="0" class="java.lang.String" itemvalue="Python.pennylane_notebook" />
-        <item index="1" class="java.lang.String" itemvalue="Python.shor_code_model" />
+      <list size="3">
+        <item index="0" class="java.lang.String" itemvalue="Python.quantum_nn" />
+        <item index="1" class="java.lang.String" itemvalue="Python.pennylane_notebook" />
+        <item index="2" class="java.lang.String" itemvalue="Python.shor_code_model" />
       </list>
     </recent_temporary>
   </component>
@@ -400,7 +433,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/pennylane_notebook.py</url>
-          <line>40</line>
+          <line>49</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -410,11 +443,16 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/pennylane_notebook.py</url>
-          <line>23</line>
+          <line>34</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/quantum_nn.py</url>
+          <line>54</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="5" />
+      <option name="time" value="6" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -624,8 +662,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pennylane_notebook.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="25" lean-forward="false" selection-start-line="16" selection-start-column="25" selection-end-line="16" selection-end-column="25" />
+        <state relative-caret-position="291">
+          <caret line="164" column="54" lean-forward="true" selection-start-line="159" selection-start-column="4" selection-end-line="164" selection-end-column="54" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/quantum_nn.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="472">
+          <caret line="103" column="15" lean-forward="true" selection-start-line="103" selection-start-column="15" selection-end-line="103" selection-end-column="15" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>

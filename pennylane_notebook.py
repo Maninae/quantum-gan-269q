@@ -14,9 +14,12 @@ from pyquil.api import WavefunctionSimulator
 gan_dev = qml.device('forest.qvm', device='10q-pyqvm', shots=1000)
 
 
+# qml.device('12q-pyqvm', wires=9)
+
+
+
 def make_shor_encoding():
 
-    # qml.device('12q-pyqvm', wires=9)
 
 
 def add_noise(qubits, level=1):
