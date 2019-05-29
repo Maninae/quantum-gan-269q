@@ -18,16 +18,24 @@ test_dev = qml.device('forest.qvm', device='10q-pyqvm', noise=False, shots=1000)
 
 
 
-def add_single_qubit_error(qbit_list):
+def add_single_qubit_error():
     """
     Applies either a sign flip (Z-gate) or a bit flip (X-gate)
     or both to a randomly selected qubit to simulate a single
     bit error in a noisy channel.
     """
     qbit = random.randint(0, 8)
-    if (random.random() < 0.5):
+    if random.random() < 0.3:
         qml.PauliX(qbit)
-    if (random.random() < 0.5):
+    elif random.random() < 0.6:
+        # TODO: figure out why phase flip doesn't appear to be changing
+        # the expectation values -- maybe because we are measuring
+        # in the Z basis?
+        # print(qbit, ": phase")
+        # qml.Hadamard(qbit)
+        qml.PauliZ(qbit)
+    else:
+        qml.PauliX(qbit)
         qml.PauliZ(qbit)
 
 def bit_encode(qbit1, qbit2, qbit3):
@@ -53,6 +61,8 @@ def shor_encoding(input_wire):
     for qubit in first_level_qubits:
         bit_encode(qubit, qubit+1, qubit+2)
 
+    # Simulate single qubit errors
+    add_single_qubit_error()
 
     expectation_list = []
 
@@ -61,8 +71,6 @@ def shor_encoding(input_wire):
     for qbit in range(9):
         expecatation_val = qml.expval.PauliZ(wires=qbit)
         expectation_list.append(expecatation_val)
-
-    print(expectation_list)
 
     return expectation_list
 
