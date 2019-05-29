@@ -105,15 +105,15 @@ def shor_decoding_model(weights):
     output_wire = 9
     for i in range(9):
         first = i
-        qml.RX(weights[0], wires=first)
-        qml.RY(weights[2], wires=first)
-        qml.RZ(weights[4], wires=first)
+        qml.RX(weights[i], wires=first)
+        qml.RY(weights[i+1], wires=first)
+        qml.RZ(weights[i+2], wires=first)
 
         qml.CNOT(wires=[first, output_wire])
 
-        qml.RX(weights[1], wires=output_wire)
-        qml.RY(weights[3], wires=output_wire)
-        qml.RZ(weights[5], wires=output_wire)
+        qml.RX(weights[i+3], wires=output_wire)
+        qml.RY(weights[i+4], wires=output_wire)
+        qml.RZ(weights[i+5], wires=output_wire)
 
 
 @qml.qnode(test_dev)
@@ -158,7 +158,7 @@ def shor_decoding_circuit(weights, ground_truth):
         qml.X(10)
 
     #entangle and measure the parity
-    qml.CNOT(wires=[10, 9])
+    # qml.CNOT(wires=[0, 9])
     return qml.expval.PauliZ(wires=9)
 
 
@@ -186,7 +186,7 @@ def loss_function(weights):
 def train(weights):
     # A training loop. Use GDO?
     # Construct our CNOt loss
-    alpha = 0.1
+    alpha = 0.6
     optimizer = GradientDescentOptimizer(alpha)
 
 
@@ -208,13 +208,19 @@ def train(weights):
 
 if __name__ == "__main__":
     eps = 1e-2
-    weights = np.array([np.pi] + [0] * 5) + np.random.normal(scale=eps, size=[6])
+    num_weights = 9 * 3 * 2
+    weights = np.array([0.0] + [0] * (num_weights-1)) + np.random.normal(scale=eps, size=[num_weights])
     print("weights before")
     print(weights)
+
+    before_weights = np.copy(weights)
 
     train(weights)
 
     print("weights after")
     print(weights)
+
+    abs_diff = np.sum(np.abs(before_weights - weights))
+    print("Total end weight diff: %f" % abs_diff)
 
     # Other things if necessary
