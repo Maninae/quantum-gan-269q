@@ -2,11 +2,13 @@ import pennylane as qml
 
 from pennylane import numpy as np
 from pennylane.optimize import GradientDescentOptimizer
-from pennylane.ops import Hadamard, RX, CNOT
+from pennylane.ops import Hadamard, RX, CNOT, PauliX, PauliZ
 from shor_code_model import real_shor_code
 from pyquil.api import WavefunctionSimulator
 
 from pennylane.ops import Hadamard, RX, CNOT
+
+import random
 
 
 
@@ -16,9 +18,17 @@ test_dev = qml.device('forest.qvm', device='10q-pyqvm', noise=False, shots=1000)
 
 
 
-def add_noise():
-    pass
-
+def add_single_qubit_error(qbit_list):
+    """
+    Applies either a sign flip (Z-gate) or a bit flip (X-gate)
+    or both to a randomly selected qubit to simulate a single
+    bit error in a noisy channel.
+    """
+    qbit = random.randint(0, 8)
+    if (random.random() < 0.5):
+        qml.PauliX(qbit)
+    if (random.random() < 0.5):
+        qml.PauliZ(qbit)
 
 def bit_encode(qbit1, qbit2, qbit3):
     qml.CNOT(wires=[qbit1, qbit2])
