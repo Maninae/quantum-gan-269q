@@ -51,7 +51,7 @@ def hadamard_list(qbit_list):
 @qml.qnode(test_dev)
 def reset_circuit():
 
-    #TODO: Ideally change this to reset all the qbits
+    #TODO: Ideally change this to reset all the qbits. Currently having issues with passing a parameter to this function
     # for i in range(9):
     #     qml.PauliX(wires=i)
     #
@@ -77,8 +77,6 @@ def flip_startbit(qubit):
 
 
 
-# Declare quantum circuit
-# @qml.qnode(test_dev)
 def shor_encoding():
     # Always have the 0 bit be the start bit
     # Measure it so it's set to 0
@@ -128,17 +126,14 @@ def shor_decoding_circuit(weights):
     # Flip so the qbit is set to ground truth
     # correct_to_ground(ground_truth)
 
-
+    #TODO: Ideally we'd like the qubbit we are encoding to either 0 or 1
     # With random probability start with 1 as the ground truth bit
     # if random.random() < 0.5:
     #     flip_startbit(0)
     #     ground_truth = 1
 
 
-
-
     shor_encoding()
-
 
 
     # We need to wrap ground_truth_qbit_value in a bigger function, like the pennylane notebook does.
@@ -158,13 +153,13 @@ def shor_decoding_circuit(weights):
     # TODO: To reset wire 0 just measure it to fix it
     # qml.expval.PauliZ(wires=10)
 
-
-
+    # If the ground_truth bit is actually 1, then negate it so the later CNOT serves as a check that the output and original bit are teh same?
     if ground_truth == 1:
-        qml.X(10)
+        qml.PauliX(9)
 
     #entangle and measure the parity
-    # qml.CNOT(wires=[0, 9])
+    # wire 10 should have a blank 0 qbit that hasn't been touched yet. CNOT with the output bit
+    qml.CNOT(wires=[10, 9])
     return qml.expval.PauliZ(wires=9)
 
 
@@ -186,6 +181,7 @@ def loss_function(weights):
     # print("entering shor decoding step")
     measurement = shor_decoding_circuit(weights)
 
+    #TODO: validate this is the right thing to do here
     return -(measurement + 1) / 2
 
 
@@ -198,7 +194,7 @@ def train(weights):
 
 
     # Optimize D, fix G
-    for it in range(50):
+    for it in range(200):
         weights = optimizer.step(loss_function, weights)
         cost = loss_function(weights)
         # if it % 1 == 0:
