@@ -14,10 +14,38 @@ import random
 
 ##############################################################
 
-test_dev = qml.device('forest.qvm', device='11q-pyqvm', noise=False, shots=1000)
+test_dev = qml.device('forest.qvm', device='12q-pyqvm', noise=False, shots=1000)
 ground_truth = 0
 
 
+def save_weights(weights, filename):
+    np.save(filename, weights)
+
+def load_weights(filename):
+    return np.load(filename)
+
+
+#TODO: A very crucial next step is then to write some code that compares the original shor encoding measurements with the ones from the learned circuit
+def compare_ground_truth_and_circuit(num_iterations, weights):
+    accumulated_error = 0.0
+
+    reference_zero = get_reference_zero_qbit()
+
+    print("reference zero: %f" % reference_zero)
+
+    for i in range(num_iterations):
+        # Assume we're making sure we always get back a 0
+        # First step is getting the corrupted Shor encdoing
+        recovered_bit_label = get_circuit_decoding_output(weights)
+
+        accumulated_error += np.abs(reference_zero - recovered_bit_label)
+        print("predicted label: %f" % recovered_bit_label)
+
+        # reset
+        # reset_circuit()
+        # reference_zero = get_reference_zero_qbit()
+
+    print("Accumulated error: %f" % accumulated_error)
 
 def add_single_qubit_error():
     """
@@ -63,7 +91,28 @@ def reset_circuit():
     #          qml.expval.PauliX(i)
 
     qml.PauliX(wires=0)
-    return qml.expval.PauliX(0)
+    qml.PauliX(wires=1)
+    qml.PauliX(wires=2)
+    qml.PauliX(wires=3)
+    qml.PauliX(wires=4)
+    qml.PauliX(wires=5)
+    qml.PauliX(wires=6)
+    qml.PauliX(wires=7)
+    qml.PauliX(wires=8)
+    qml.PauliX(wires=9)
+
+    # qml.expval.PauliZ(0)
+    # qml.expval.PauliZ(1)
+    # qml.expval.PauliZ(2)
+    # qml.expval.PauliZ(3)
+    # qml.expval.PauliZ(4)
+    # qml.expval.PauliZ(5)
+    # qml.expval.PauliZ(6)
+    # qml.expval.PauliZ(7)
+    # qml.expval.PauliZ(8)
+
+    return  qml.expval.PauliZ(0), qml.expval.PauliZ(1), qml.expval.PauliZ(2), qml.expval.PauliZ(3), qml.expval.PauliZ(4), qml.expval.PauliZ(5), qml.expval.PauliZ(6), qml.expval.PauliZ(7), qml.expval.PauliZ(8), qml.expval.PauliZ(9)
+
 
 
 def correct_to_ground(ground_truth):
@@ -118,6 +167,31 @@ def shor_decoding_model(weights):
         qml.RX(weights[i+3], wires=output_wire)
         qml.RY(weights[i+4], wires=output_wire)
         qml.RZ(weights[i+5], wires=output_wire)
+
+
+
+@qml.qnode(test_dev)
+def get_reference_zero_qbit():
+
+    # qml.CNOT(wires=[11, 10])
+    qml.RZ(0.00, 11)
+
+    return qml.expval.PauliZ(wires=11)
+
+
+@qml.qnode(test_dev)
+def get_circuit_decoding_output(weights):
+    # First apply the shor encoding to get the noisy 9 bits
+    shor_encoding()
+
+    shor_decoding_model(weights)
+
+
+    # entangle and measure the parity
+    # wire 10 should have a blank 0 qbit that hasn't been touched yet. CNOT with the output bit
+    qml.CNOT(wires=[10, 9])
+    return qml.expval.PauliZ(wires=9)
+
 
 
 @qml.qnode(test_dev)
@@ -194,7 +268,7 @@ def train(weights):
 
 
     # Optimize D, fix G
-    for it in range(200):
+    for it in range(60):
         weights = optimizer.step(loss_function, weights)
         cost = loss_function(weights)
         # if it % 1 == 0:
@@ -211,21 +285,27 @@ def train(weights):
 
 
 if __name__ == "__main__":
-    eps = 1e-2
-    num_weights = 9 * 3 * 2
-    weights = np.array([0.0] + [0] * (num_weights-1)) + np.random.normal(scale=eps, size=[num_weights])
-    print("weights before")
-    print(weights)
-    print(weights.shape)
-
-    before_weights = np.copy(weights)
-
-    weights = train(weights)
-
-    print("weights after")
-    print(weights)
-
-    abs_diff = np.sum(np.abs(before_weights - weights))
-    print("Total end weight diff: %f" % abs_diff)
+    # eps = 1e-2
+    # num_weights = 9 * 3 * 2
+    # weights = np.array([0.0] + [0] * (num_weights-1)) + np.random.normal(scale=eps, size=[num_weights])
+    # print("weights before")
+    # print(weights)
+    # print(weights.shape)
+    #
+    # before_weights = np.copy(weights)
+    #
+    # weights = train(weights)
+    #
+    # print("weights after")
+    # print(weights)
+    #
+    # abs_diff = np.sum(np.abs(before_weights - weights))
+    # print("Total end weight diff: %f" % abs_diff)
+    #
+    # save_weights(weights, "circuit_weights")
 
     # Other things if necessary
+
+
+    weights = load_weights("circuit_weights.npy")
+    compare_ground_truth_and_circuit(20, weights)
