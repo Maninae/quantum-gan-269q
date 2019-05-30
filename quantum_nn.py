@@ -15,6 +15,7 @@ import random
 ##############################################################
 
 test_dev = qml.device('forest.qvm', device='11q-pyqvm', noise=False, shots=1000)
+ground_truth = 0
 
 
 
@@ -50,14 +51,19 @@ def hadamard_list(qbit_list):
 @qml.qnode(test_dev)
 def reset_circuit():
 
-    # for i in reversed(range(8,1)):
+    #TODO: Ideally change this to reset all the qbits
+    # for i in range(9):
     #     qml.PauliX(wires=i)
     #
-    # for i in reversed(range(8,1)):
-    #     qml.expval.PauliZ(wires=i)
+    # val = None
+    # for i in reversed(range(9)):
+    #     if i == 0:
+    #         val = qml.expval.PauliX(i)
+    #     else:
+    #          qml.expval.PauliX(i)
 
     qml.PauliX(wires=0)
-    return qml.expval.PauliX(wires=0)
+    return qml.expval.PauliX(0)
 
 
 def correct_to_ground(ground_truth):
@@ -117,7 +123,7 @@ def shor_decoding_model(weights):
 
 
 @qml.qnode(test_dev)
-def shor_decoding_circuit(weights, ground_truth):
+def shor_decoding_circuit(weights):
 
     # Flip so the qbit is set to ground truth
     # correct_to_ground(ground_truth)
@@ -163,6 +169,7 @@ def shor_decoding_circuit(weights, ground_truth):
 
 
 
+# @qml.qnode(test_dev)
 
 def loss_function(weights):
     # Have shor_encoding prepare and also give back the true value of the bit
@@ -174,11 +181,10 @@ def loss_function(weights):
     print("GROUND TRUTH :%f" % ground_truth)
     # now round ground truth
     ground_truth = int(round(ground_truth))
+    print("AFter rounding ground truth: %f" % ground_truth)
 
-
-
-    print("entering shor decoding step")
-    measurement = shor_decoding_circuit(weights, ground_truth)
+    # print("entering shor decoding step")
+    measurement = shor_decoding_circuit(weights)
 
     return -(measurement + 1) / 2
 
@@ -186,18 +192,20 @@ def loss_function(weights):
 def train(weights):
     # A training loop. Use GDO?
     # Construct our CNOt loss
-    alpha = 0.6
+    alpha = 0.3
     optimizer = GradientDescentOptimizer(alpha)
 
 
 
     # Optimize D, fix G
     for it in range(50):
-        disc_weights = optimizer.step(loss_function, weights)
-        cost = loss_function(disc_weights)
+        weights = optimizer.step(loss_function, weights)
+        cost = loss_function(weights)
         # if it % 1 == 0:
         print("Step {}: cost = {}".format(it + 1, cost))
         print("END STEP\n\n\n")
+
+    return weights
 
 
 
@@ -212,10 +220,11 @@ if __name__ == "__main__":
     weights = np.array([0.0] + [0] * (num_weights-1)) + np.random.normal(scale=eps, size=[num_weights])
     print("weights before")
     print(weights)
+    print(weights.shape)
 
     before_weights = np.copy(weights)
 
-    train(weights)
+    weights = train(weights)
 
     print("weights after")
     print(weights)
