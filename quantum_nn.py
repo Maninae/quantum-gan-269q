@@ -25,7 +25,8 @@ def load_weights(filename):
     return np.load(filename)
 
 
-#TODO: A very crucial next step is then to write some code that compares the original shor encoding measurements with the ones from the learned circuit
+
+ # Compares the original shor encoding measurements with the ones from the learned circuit
 def compare_ground_truth_and_circuit(num_iterations, weights):
     accumulated_error = 0.0
 
@@ -36,13 +37,23 @@ def compare_ground_truth_and_circuit(num_iterations, weights):
     for i in range(num_iterations):
         # Assume we're making sure we always get back a 0
         # First step is getting the corrupted Shor encdoing
+        ground_truth = reset_circuit()[0]
+
+        print("GROUND TRUTH :%f" % ground_truth)
+        # now round ground truth
+        ground_truth = int(round(ground_truth))
+        print("After rounding ground truth: %f" % ground_truth)
+        if random.random() < 0.5:
+            # print("FLIPPING BIT")
+            flip_startbit()
+
         recovered_bit_label = get_circuit_decoding_output(weights)
 
         accumulated_error += np.abs(reference_zero - recovered_bit_label)
         print("predicted label: %f" % recovered_bit_label)
 
         # reset
-        # reset_circuit()
+        reset_circuit()
         # reference_zero = get_reference_zero_qbit()
 
     print("Accumulated error: %f" % accumulated_error)
@@ -77,7 +88,7 @@ def hadamard_list(qbit_list):
         qml.Hadamard(qbit)
 
 @qml.qnode(test_dev)
-def reset_circuit():
+def reset_circuit(set_to_ones=False):
 
     #TODO: Ideally change this to reset all the qbits. Currently having issues with passing a parameter to this function
     # for i in range(9):
@@ -90,16 +101,16 @@ def reset_circuit():
     #     else:
     #          qml.expval.PauliX(i)
 
-    qml.PauliX(wires=0)
-    qml.PauliX(wires=1)
-    qml.PauliX(wires=2)
-    qml.PauliX(wires=3)
-    qml.PauliX(wires=4)
-    qml.PauliX(wires=5)
-    qml.PauliX(wires=6)
-    qml.PauliX(wires=7)
-    qml.PauliX(wires=8)
-    qml.PauliX(wires=9)
+    qml.RX(0, wires=0)
+    qml.RX(0, wires=1)
+    qml.RX(0, wires=2)
+    qml.RX(0, wires=3)
+    qml.RX(0, wires=4)
+    qml.RX(0, wires=5)
+    qml.RX(0, wires=6)
+    qml.RX(0, wires=7)
+    qml.RX(0, wires=8)
+    qml.RX(0, wires=9)
 
     # qml.expval.PauliZ(0)
     # qml.expval.PauliZ(1)
@@ -111,7 +122,9 @@ def reset_circuit():
     # qml.expval.PauliZ(7)
     # qml.expval.PauliZ(8)
 
-    return  qml.expval.PauliZ(0), qml.expval.PauliZ(1), qml.expval.PauliZ(2), qml.expval.PauliZ(3), qml.expval.PauliZ(4), qml.expval.PauliZ(5), qml.expval.PauliZ(6), qml.expval.PauliZ(7), qml.expval.PauliZ(8), qml.expval.PauliZ(9)
+
+    #TODO: Figure out whether we are supposed to measure in the Pauli-Z axis or not. Might have to be X-axis?
+    return  qml.expval.PauliZ(0), qml.expval.PauliX(1), qml.expval.PauliX(2), qml.expval.PauliX(3), qml.expval.PauliX(4), qml.expval.PauliX(5), qml.expval.PauliX(6), qml.expval.PauliX(7), qml.expval.PauliX(8), qml.expval.PauliX(9)
 
 
 
@@ -119,11 +132,13 @@ def correct_to_ground(ground_truth):
     if int(round(ground_truth)):
         qml.PauliX(wires=0)
 
-
-def flip_startbit(qubit):
+@qml.qnode(test_dev)
+def flip_startbit():
     print("flipping the bit")
-    qml.PauliX(wires=qubit)
+    qml.PauliX(wires=0)
 
+    # Just return the value of the second qubit instead
+    return qml.expval.PauliX(wires=1)
 
 
 def shor_encoding():
@@ -176,6 +191,7 @@ def get_reference_zero_qbit():
     # qml.CNOT(wires=[11, 10])
     qml.RZ(0.00, 11)
 
+    #TODO: should this be a Pauli-Z rotation as well?
     return qml.expval.PauliZ(wires=11)
 
 
@@ -183,14 +199,12 @@ def get_reference_zero_qbit():
 def get_circuit_decoding_output(weights):
     # First apply the shor encoding to get the noisy 9 bits
     shor_encoding()
-
     shor_decoding_model(weights)
-
 
     # entangle and measure the parity
     # wire 10 should have a blank 0 qbit that hasn't been touched yet. CNOT with the output bit
     qml.CNOT(wires=[10, 9])
-    return qml.expval.PauliZ(wires=9)
+    return qml.expval.PauliX(wires=9)
 
 
 
@@ -199,14 +213,6 @@ def shor_decoding_circuit(weights):
 
     # Flip so the qbit is set to ground truth
     # correct_to_ground(ground_truth)
-
-    #TODO: Ideally we'd like the qubbit we are encoding to either 0 or 1
-    # With random probability start with 1 as the ground truth bit
-    # if random.random() < 0.5:
-    #     flip_startbit(0)
-    #     ground_truth = 1
-
-
     shor_encoding()
 
 
@@ -220,21 +226,19 @@ def shor_decoding_circuit(weights):
     # Assume the decoding circuit has been run, and the output is on wire 9
     #  Create ground truth qubit on wire 0
 
-    # This is PSEUDOCODE RN
-    # qml.reset(wires=0)
-
 
     # TODO: To reset wire 0 just measure it to fix it
     # qml.expval.PauliZ(wires=10)
 
-    # If the ground_truth bit is actually 1, then negate it so the later CNOT serves as a check that the output and original bit are teh same?
-    if ground_truth == 1:
-        qml.PauliX(9)
+    # If the ground_truth bit is actually 1, then negate it so the later CNOT serves as a check that the output and original bit are the same?
+    # if ground_truth == 1:
+    #     qml.PauliX(9)
 
+    #TODO: verify this correct to do
     #entangle and measure the parity
     # wire 10 should have a blank 0 qbit that hasn't been touched yet. CNOT with the output bit
     qml.CNOT(wires=[10, 9])
-    return qml.expval.PauliZ(wires=9)
+    return qml.expval.PauliX(wires=9)
 
 
 
@@ -244,7 +248,7 @@ def loss_function(weights):
     # Have shor_encoding prepare and also give back the true value of the bit
 
     # Get a blank slate for the working Shor bits
-    ground_truth = reset_circuit()
+    ground_truth = reset_circuit()[0]
 
 
     print("GROUND TRUTH :%f" % ground_truth)
@@ -252,8 +256,22 @@ def loss_function(weights):
     ground_truth = int(round(ground_truth))
     print("AFter rounding ground truth: %f" % ground_truth)
 
+    # TODO: Ideally we'd like the qubit we are encoding to either 0 or 1. Problem is there are no if-statements in circuits smh
+    # With random probability start with 1 as the ground truth bit
+    if random.random() < 0.5:
+        # print("FLIPPING BIT")
+        flip_startbit()
+        ground_truth = 1
+
     # print("entering shor decoding step")
+    # if ground_truth == 1:
+    #     print("FLIPPED")
+    #     qml.PauliX(wires=0)
+
     measurement = shor_decoding_circuit(weights)
+
+    print("Recovered measurement:")
+    print(measurement)
 
     #TODO: validate this is the right thing to do here
     return -(measurement + 1) / 2
@@ -262,18 +280,22 @@ def loss_function(weights):
 def train(weights):
     # A training loop. Use GDO?
     # Construct our CNOt loss
-    alpha = 0.3
+    alpha = 0.2
     optimizer = GradientDescentOptimizer(alpha)
 
+    #TODO: Ideally, we want to train encodings of logical 0 and logical 1.
+    # This has been tricky to figure out in terms of PennyLane QNode restrictions.
+    # A possable work around is to to have two different optimizers. One for logical 0 and another for logical 1
 
 
     # Optimize D, fix G
-    for it in range(60):
+    for it in range(200):
         weights = optimizer.step(loss_function, weights)
         cost = loss_function(weights)
         # if it % 1 == 0:
         print("Step {}: cost = {}".format(it + 1, cost))
         print("END STEP\n\n\n")
+        reset_circuit()
 
     return weights
 
