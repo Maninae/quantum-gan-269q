@@ -1,7 +1,7 @@
 import pennylane as qml
 
 from pennylane import numpy as np
-from pennylane.optimize import GradientDescentOptimizer
+from pennylane.optimize import GradientDescentOptimizer, AdamOptimizer
 from pennylane.ops import Hadamard, RX, CNOT, PauliX, PauliZ
 from shor_code_model import real_shor_code
 from pyquil.api import WavefunctionSimulator
@@ -333,7 +333,7 @@ def train(weights):
     # A training loop. Use GDO?
     # Construct our CNOt loss
     alpha = 0.45
-    optimizer = GradientDescentOptimizer(alpha)
+    optimizer = AdamOptimizer(alpha)
 
     #TODO: Ideally, we want to train encodings of logical 0 and logical 1.
     # This has been tricky to figure out in terms of PennyLane QNode restrictions.
