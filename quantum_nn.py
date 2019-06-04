@@ -142,7 +142,7 @@ def correct_to_ground(ground_truth):
 @qml.qnode(test_dev)
 def flip_startbit():
     print("flipping the bit")
-    qml.PauliX(wires=0)
+    qml.PauliZ(wires=0)
 
     # Just return the value of the second qubit instead
     return qml.expval.PauliZ(wires=0)
@@ -272,7 +272,7 @@ def loss_function(weights):
     print("GROUND TRUTH :%f" % ground_truth)
     # now round ground truth
 
-    assert(int(round(ground_truth)) == 0.0)
+    assert(int(round(ground_truth)) == -1.0)
     # ground_truth = int(round(ground_truth))
 
 
@@ -329,24 +329,27 @@ def train(weights):
 
 
 if __name__ == "__main__":
-    # eps = 1e-2
-    # num_weights = 9 * 3 * 2
-    # weights = np.array([0.0] + [0] * (num_weights-1)) + np.random.normal(scale=eps, size=[num_weights])
-    # print("weights before")
-    # print(weights)
-    # print(weights.shape)
-    #
-    # before_weights = np.copy(weights)
-    #
-    # weights = train(weights)
-    #
-    # print("weights after")
-    # print(weights)
-    #
-    # abs_diff = np.sum(np.abs(before_weights - weights))
-    # print("Total end weight diff: %f" % abs_diff)
+    eps = 1e-2
+    num_weights = 9 * 3 * 2
 
-    # save_weights(weights, "circuit_weights")
+    weights = np.array([0.0] + [0] * (num_weights-1)) + np.random.normal(scale=eps, size=[num_weights])
+
+
+    print("weights before")
+    print(weights)
+    print(weights.shape)
+
+    before_weights = np.copy(weights)
+
+    weights = train(weights)
+
+    print("weights after")
+    print(weights)
+
+    abs_diff = np.sum(np.abs(before_weights - weights))
+    print("Total end weight diff: %f" % abs_diff)
+
+    save_weights(weights, "circuit_weights")
 
     # Other things if necessary
 

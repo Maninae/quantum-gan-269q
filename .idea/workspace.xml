@@ -16,13 +16,13 @@
       <file leaf-file-name="quantum_nn.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/quantum_nn.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-240">
-              <caret line="150" column="9" lean-forward="false" selection-start-line="150" selection-start-column="4" selection-end-line="150" selection-end-column="9" />
+            <state relative-caret-position="195">
+              <caret line="274" column="43" lean-forward="false" selection-start-line="274" selection-start-column="43" selection-end-line="274" selection-end-column="43" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
-                <marker date="1559628496895" expanded="true" signature="6101:6125" ph="..." />
-                <marker date="1559628496895" expanded="true" signature="7853:7952" ph="..." />
-                <marker date="1559628496895" expanded="true" signature="7913:7951" ph="..." />
+                <marker date="1559684635172" expanded="true" signature="6101:6125" ph="..." />
+                <marker date="1559684635172" expanded="true" signature="7854:7953" ph="..." />
+                <marker date="1559684635172" expanded="true" signature="7914:7952" ph="..." />
               </folding>
             </state>
           </provider>
@@ -121,11 +121,8 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Recovered</find>
       <find>shor_decoding_ci</find>
-      <find>reset_circ</find>
       <find>get_circuit_decoding</find>
-      <find>reset</find>
       <find>reset_ci</find>
       <find>Recovered Mea</find>
       <find>flip_startbit</find>
@@ -139,7 +136,6 @@
       <find>ground truth: 0.</find>
       <find>ground truth: 1.</find>
       <find>predicted</find>
-      <find>flip_start</find>
       <find>predicted label</find>
       <find>recov</find>
       <find>refere</find>
@@ -151,6 +147,10 @@
       <find>after rounding</find>
       <find>reset_cir</find>
       <find>set_to_ones</find>
+      <find>reset</find>
+      <find>reset_circ</find>
+      <find>real</find>
+      <find>flip_start</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -303,7 +303,7 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25885227" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32958034" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32958034" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -373,9 +373,9 @@
           <caret line="34" column="29" lean-forward="true" selection-start-line="34" selection-start-column="29" selection-end-line="34" selection-end-column="29" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
-            <marker date="1559628496895" expanded="true" signature="6101:6125" ph="..." />
-            <marker date="1559628496895" expanded="true" signature="7853:7952" ph="..." />
-            <marker date="1559628496895" expanded="true" signature="7913:7951" ph="..." />
+            <marker date="1559684635172" expanded="true" signature="6101:6125" ph="..." />
+            <marker date="1559684635172" expanded="true" signature="7854:7953" ph="..." />
+            <marker date="1559684635172" expanded="true" signature="7914:7952" ph="..." />
           </folding>
         </state>
       </provider>
@@ -436,9 +436,9 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
-            <marker date="1559628496895" expanded="true" signature="6101:6125" ph="..." />
-            <marker date="1559628496895" expanded="true" signature="7853:7952" ph="..." />
-            <marker date="1559628496895" expanded="true" signature="7913:7951" ph="..." />
+            <marker date="1559684635172" expanded="true" signature="6101:6125" ph="..." />
+            <marker date="1559684635172" expanded="true" signature="7854:7953" ph="..." />
+            <marker date="1559684635172" expanded="true" signature="7914:7952" ph="..." />
           </folding>
         </state>
       </provider>
@@ -499,9 +499,9 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
-            <marker date="1559628496895" expanded="true" signature="6101:6125" ph="..." />
-            <marker date="1559628496895" expanded="true" signature="7853:7952" ph="..." />
-            <marker date="1559628496895" expanded="true" signature="7913:7951" ph="..." />
+            <marker date="1559684635172" expanded="true" signature="6101:6125" ph="..." />
+            <marker date="1559684635172" expanded="true" signature="7854:7953" ph="..." />
+            <marker date="1559684635172" expanded="true" signature="7914:7952" ph="..." />
           </folding>
         </state>
       </provider>
@@ -626,13 +626,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/quantum_nn.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-240">
-          <caret line="150" column="9" lean-forward="false" selection-start-line="150" selection-start-column="4" selection-end-line="150" selection-end-column="9" />
+        <state relative-caret-position="195">
+          <caret line="274" column="43" lean-forward="false" selection-start-line="274" selection-start-column="43" selection-end-line="274" selection-end-column="43" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
-            <marker date="1559628496895" expanded="true" signature="6101:6125" ph="..." />
-            <marker date="1559628496895" expanded="true" signature="7853:7952" ph="..." />
-            <marker date="1559628496895" expanded="true" signature="7913:7951" ph="..." />
+            <marker date="1559684635172" expanded="true" signature="6101:6125" ph="..." />
+            <marker date="1559684635172" expanded="true" signature="7854:7953" ph="..." />
+            <marker date="1559684635172" expanded="true" signature="7914:7952" ph="..." />
           </folding>
         </state>
       </provider>
