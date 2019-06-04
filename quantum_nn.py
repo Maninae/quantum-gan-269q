@@ -146,10 +146,11 @@ def correct_to_ground(ground_truth):
 @qml.qnode(test_dev)
 def flip_startbit():
     print("flipping the bit")
-    qml.PauliZ(wires=0)
+    qml.PauliX(wires=0)
+    qml.PauliX(wires=1)
 
     # Just return the value of the second qubit instead
-    return qml.expval.PauliZ(wires=0)
+    return qml.expval.PauliZ(wires=1)
 
 
 def shor_encoding():
@@ -198,7 +199,11 @@ def shor_decoding_model(weights):
         for j in range(nb_qubits - 1):
             qml.CNOT(wires=[j, j+1])
 
-        """
+
+    qml.CNOT(wires=[8, output_wire])
+
+
+    """
         first = i
 
         #TODO: validate that this circuit can interpret both the logical 0 and logical 1 case
@@ -276,7 +281,7 @@ def shor_decoding_circuit(weights):
     #TODO: verify this correct to do
     #entangle and measure the parity
     # wire 10 should have a blank 0 qbit that hasn't been touched yet. CNOT with the output bit
-    qml.CNOT(wires=[10, 9])
+    # qml.CNOT(wires=[10, 9])
     return qml.expval.PauliZ(wires=9)
 
 
@@ -301,7 +306,8 @@ def loss_function(weights):
     # With random probability start with 1 as the ground truth bit
     if random.random() < 0.5:
         print("FLIPPING BIT")
-        ground_truth = flip_startbit()
+        flip_startbit()
+        ground_truth = 1.0
 
     print("After rounding ground truth: %f" % ground_truth)
 
@@ -326,7 +332,7 @@ def loss_function(weights):
 def train(weights):
     # A training loop. Use GDO?
     # Construct our CNOt loss
-    alpha = 0.4
+    alpha = 0.45
     optimizer = GradientDescentOptimizer(alpha)
 
     #TODO: Ideally, we want to train encodings of logical 0 and logical 1.
@@ -350,34 +356,41 @@ def train(weights):
 
 
 if __name__ == "__main__":
+    # Old way of doing weight initialization
     # eps = 1e-2
     # num_weights = 9 * 3 * 2
-    #
     # weights = np.array([0.0] + [0] * (num_weights-1)) + np.random.normal(scale=eps, size=[num_weights])
-    #
-    #
-    # print("weights before")
-    # print(weights)
-    # print(weights.shape)
-    #
-    # before_weights = np.copy(weights)
-    #
-    # weights = train(weights)
-    #
-    # print("weights after")
-    # print(weights)
-    #
-    # abs_diff = np.sum(np.abs(before_weights - weights))
-    # print("Total end weight diff: %f" % abs_diff)
-    #
-    # save_weights(weights, "circuit_weights")
 
-    # Other things if necessary
 
-    # test_flipp = test_zeroes()
+
+    # test_flipp = test_zerotest_zeroees()
     # print("tested X flip: %f" % test_flipp)
+
 
     nb_layers = 5
     nb_qubits = 9
-    weights = 0.1 * np.random.randn(nb_layers, nb_qubits, 2)
-    compare_ground_truth_and_circuit(100, weights)
+    weights = (np.pi / 3) * np.random.randn(nb_layers, nb_qubits, 2)
+
+    print("weights before")
+    print(weights)
+    print(weights.shape)
+
+    before_weights = np.copy(weights)
+
+    weights = train(weights)
+
+    print("weights after")
+    print(weights)
+
+    abs_diff = np.sum(np.abs(before_weights - weights))
+    print("Total end weight diff: %f" % abs_diff)
+
+    save_weights(weights, "circuit_weights")
+
+    # Other things if necessary
+
+
+    # nb_layers = 5
+    # nb_qubits = 9
+    # weights = 0.1 * np.random.randn(nb_layers, nb_qubits, 2)
+    # compare_ground_truth_and_circuit(100, weights)
