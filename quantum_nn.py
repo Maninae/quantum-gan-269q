@@ -54,8 +54,10 @@ def compare_ground_truth_and_circuit(num_iterations, weights):
 
         recovered_bit_label = get_circuit_decoding_output(weights)
 
-        accumulated_error += np.abs(ground_truth - recovered_bit_label)
+        error = np.abs(ground_truth - recovered_bit_label)
+        accumulated_error += error
         print("predicted label: %f" % recovered_bit_label)
+        print("added to error: %f" % error)
 
         # reset
         reset_circuit()
@@ -179,7 +181,7 @@ def shor_encoding():
 
 def shor_decoding_model(weights):
     nb_layers, nb_qubits, _ = weights.shape
-    assert weights.shape[2] == 3
+    assert weights.shape[2] == 2
     
     output_wire = 9
     assert nb_qubits == output_wire
@@ -348,27 +350,27 @@ def train(weights):
 
 
 if __name__ == "__main__":
-    eps = 1e-2
-    num_weights = 9 * 3 * 2
-
-    weights = np.array([0.0] + [0] * (num_weights-1)) + np.random.normal(scale=eps, size=[num_weights])
-
-
-    print("weights before")
-    print(weights)
-    print(weights.shape)
-
-    before_weights = np.copy(weights)
-
-    weights = train(weights)
-
-    print("weights after")
-    print(weights)
-
-    abs_diff = np.sum(np.abs(before_weights - weights))
-    print("Total end weight diff: %f" % abs_diff)
-
-    save_weights(weights, "circuit_weights")
+    # eps = 1e-2
+    # num_weights = 9 * 3 * 2
+    #
+    # weights = np.array([0.0] + [0] * (num_weights-1)) + np.random.normal(scale=eps, size=[num_weights])
+    #
+    #
+    # print("weights before")
+    # print(weights)
+    # print(weights.shape)
+    #
+    # before_weights = np.copy(weights)
+    #
+    # weights = train(weights)
+    #
+    # print("weights after")
+    # print(weights)
+    #
+    # abs_diff = np.sum(np.abs(before_weights - weights))
+    # print("Total end weight diff: %f" % abs_diff)
+    #
+    # save_weights(weights, "circuit_weights")
 
     # Other things if necessary
 

@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0f59acfc-495d-4c59-a807-e3c9ed5514e8" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/quantum_nn.py" afterPath="$PROJECT_DIR$/quantum_nn.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -16,13 +17,10 @@
       <file leaf-file-name="quantum_nn.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/quantum_nn.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="274" column="43" lean-forward="false" selection-start-line="274" selection-start-column="43" selection-end-line="274" selection-end-column="43" />
+            <state relative-caret-position="426">
+              <caret line="59" column="42" lean-forward="false" selection-start-line="59" selection-start-column="42" selection-end-line="59" selection-end-column="42" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
-                <marker date="1559684635172" expanded="true" signature="6101:6125" ph="..." />
-                <marker date="1559684635172" expanded="true" signature="7854:7953" ph="..." />
-                <marker date="1559684635172" expanded="true" signature="7914:7952" ph="..." />
               </folding>
             </state>
           </provider>
@@ -121,8 +119,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>shor_decoding_ci</find>
-      <find>get_circuit_decoding</find>
       <find>reset_ci</find>
       <find>Recovered Mea</find>
       <find>flip_startbit</find>
@@ -151,6 +147,8 @@
       <find>reset_circ</find>
       <find>real</find>
       <find>flip_start</find>
+      <find>shor_decoding</find>
+      <find>shor_decoding_model</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -343,22 +341,22 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quantum_nn.py</url>
-          <line>173</line>
+          <line>103</line>
           <option name="timeStamp" value="5" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quantum_nn.py</url>
-          <line>144</line>
+          <line>148</line>
           <option name="timeStamp" value="26" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quantum_nn.py</url>
-          <line>292</line>
+          <line>297</line>
           <option name="timeStamp" value="28" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quantum_nn.py</url>
-          <line>218</line>
+          <line>208</line>
           <option name="timeStamp" value="30" />
         </line-breakpoint>
       </breakpoints>
@@ -373,9 +371,6 @@
           <caret line="34" column="29" lean-forward="true" selection-start-line="34" selection-start-column="29" selection-end-line="34" selection-end-column="29" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
-            <marker date="1559684635172" expanded="true" signature="6101:6125" ph="..." />
-            <marker date="1559684635172" expanded="true" signature="7854:7953" ph="..." />
-            <marker date="1559684635172" expanded="true" signature="7914:7952" ph="..." />
           </folding>
         </state>
       </provider>
@@ -436,9 +431,6 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
-            <marker date="1559684635172" expanded="true" signature="6101:6125" ph="..." />
-            <marker date="1559684635172" expanded="true" signature="7854:7953" ph="..." />
-            <marker date="1559684635172" expanded="true" signature="7914:7952" ph="..." />
           </folding>
         </state>
       </provider>
@@ -499,9 +491,6 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
-            <marker date="1559684635172" expanded="true" signature="6101:6125" ph="..." />
-            <marker date="1559684635172" expanded="true" signature="7854:7953" ph="..." />
-            <marker date="1559684635172" expanded="true" signature="7914:7952" ph="..." />
           </folding>
         </state>
       </provider>
@@ -626,13 +615,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/quantum_nn.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="274" column="43" lean-forward="false" selection-start-line="274" selection-start-column="43" selection-end-line="274" selection-end-column="43" />
+        <state relative-caret-position="426">
+          <caret line="59" column="42" lean-forward="false" selection-start-line="59" selection-start-column="42" selection-end-line="59" selection-end-column="42" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
-            <marker date="1559684635172" expanded="true" signature="6101:6125" ph="..." />
-            <marker date="1559684635172" expanded="true" signature="7854:7953" ph="..." />
-            <marker date="1559684635172" expanded="true" signature="7914:7952" ph="..." />
           </folding>
         </state>
       </provider>
