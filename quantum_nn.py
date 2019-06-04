@@ -21,7 +21,9 @@ ground_truth = 0
 def save_weights(weights, filename):
     np.save(filename, weights)
 
+
 def load_weights(filename):
+    # DEPRECATED
     return np.load(filename)
 
 
@@ -176,9 +178,25 @@ def shor_encoding():
 
 
 def shor_decoding_model(weights):
-    # Our neural network
+    nb_layers, nb_qubits, _ = weights.shape
+    assert weights.shape[2] == 3
+    
     output_wire = 9
-    for i in range(9):
+    assert nb_qubits == output_wire
+    
+    # Our neural network: the ansatz from class
+    for i in range(nb_layers):
+
+        for j in range(nb_qubits):
+            # For wires 0-8 inclusive
+            qml.RX(weights[i, j, 0], wires=j)
+            # qml.RY(weights[i, j, 1], wires=j)
+            qml.RZ(weights[i, j, 1], wires=j)
+
+        for j in range(nb_qubits - 1):
+            qml.CNOT(wires=[j, j+1])
+
+        """
         first = i
 
         #TODO: validate that this circuit can interpret both the logical 0 and logical 1 case
@@ -191,6 +209,7 @@ def shor_decoding_model(weights):
         qml.RX(weights[i+3], wires=output_wire)
         qml.RY(weights[i+4], wires=output_wire)
         qml.RZ(weights[i+5], wires=output_wire)
+        """
 
 
 
@@ -353,6 +372,7 @@ if __name__ == "__main__":
     # test_flipp = test_zeroes()
     # print("tested X flip: %f" % test_flipp)
 
-
-    weights = load_weights("circuit_weights.npy")
+    nb_layers = 5
+    nb_qubits = 9
+    weights = 0.1 * np.random.randn(nb_layers, nb_qubits, 2)
     compare_ground_truth_and_circuit(100, weights)
