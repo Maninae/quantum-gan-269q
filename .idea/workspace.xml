@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0f59acfc-495d-4c59-a807-e3c9ed5514e8" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/circuit_weights.npy" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/quantum_nn.py" afterPath="$PROJECT_DIR$/quantum_nn.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -18,13 +16,13 @@
       <file leaf-file-name="quantum_nn.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/quantum_nn.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3889">
-              <caret line="51" column="0" lean-forward="false" selection-start-line="51" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
+            <state relative-caret-position="-240">
+              <caret line="150" column="9" lean-forward="false" selection-start-line="150" selection-start-column="4" selection-end-line="150" selection-end-column="9" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
-                <marker date="1559609351345" expanded="true" signature="5842:5866" ph="..." />
-                <marker date="1559609351345" expanded="true" signature="7567:7675" ph="..." />
-                <marker date="1559609351345" expanded="true" signature="7627:7650" ph="..." />
+                <marker date="1559628496895" expanded="true" signature="6101:6125" ph="..." />
+                <marker date="1559628496895" expanded="true" signature="7853:7952" ph="..." />
+                <marker date="1559628496895" expanded="true" signature="7913:7951" ph="..." />
               </folding>
             </state>
           </provider>
@@ -44,7 +42,7 @@
         <entry file="file://$USER_HOME$/anaconda/envs/cs20_tensorflow/lib/python3.6/site-packages/pennylane/optimize/gradient_descent.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="811">
-              <caret line="77" column="46" lean-forward="true" selection-start-line="77" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
+              <caret line="77" column="46" lean-forward="false" selection-start-line="77" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -123,20 +121,11 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>FLIPPED</find>
-      <find>shor_enc</find>
-      <find>reference_zero</find>
-      <find>get_refere</find>
-      <find>ground_truth</find>
-      <find>get_circuit_decoding_output</find>
-      <find>RESET_CIRC</find>
       <find>Recovered</find>
-      <find>reset_cir</find>
       <find>shor_decoding_ci</find>
       <find>reset_circ</find>
       <find>get_circuit_decoding</find>
       <find>reset</find>
-      <find>reset_circuit</find>
       <find>reset_ci</find>
       <find>Recovered Mea</find>
       <find>flip_startbit</find>
@@ -153,6 +142,15 @@
       <find>flip_start</find>
       <find>predicted label</find>
       <find>recov</find>
+      <find>refere</find>
+      <find>test_flip</find>
+      <find>in the rese</find>
+      <find>reset_circuit</find>
+      <find>flip_star</find>
+      <find>flip_s</find>
+      <find>after rounding</find>
+      <find>reset_cir</find>
+      <find>set_to_ones</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -345,33 +343,23 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quantum_nn.py</url>
-          <line>172</line>
+          <line>173</line>
           <option name="timeStamp" value="5" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quantum_nn.py</url>
-          <line>143</line>
+          <line>144</line>
           <option name="timeStamp" value="26" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quantum_nn.py</url>
-          <line>256</line>
-          <option name="timeStamp" value="27" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/quantum_nn.py</url>
-          <line>279</line>
+          <line>292</line>
           <option name="timeStamp" value="28" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quantum_nn.py</url>
-          <line>206</line>
+          <line>218</line>
           <option name="timeStamp" value="30" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/quantum_nn.py</url>
-          <line>38</line>
-          <option name="timeStamp" value="32" />
         </line-breakpoint>
       </breakpoints>
       <option name="time" value="33" />
@@ -385,9 +373,9 @@
           <caret line="34" column="29" lean-forward="true" selection-start-line="34" selection-start-column="29" selection-end-line="34" selection-end-column="29" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
-            <marker date="1559609351345" expanded="true" signature="5842:5866" ph="..." />
-            <marker date="1559609351345" expanded="true" signature="7567:7675" ph="..." />
-            <marker date="1559609351345" expanded="true" signature="7627:7650" ph="..." />
+            <marker date="1559628496895" expanded="true" signature="6101:6125" ph="..." />
+            <marker date="1559628496895" expanded="true" signature="7853:7952" ph="..." />
+            <marker date="1559628496895" expanded="true" signature="7913:7951" ph="..." />
           </folding>
         </state>
       </provider>
@@ -448,9 +436,9 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
-            <marker date="1559609351345" expanded="true" signature="5842:5866" ph="..." />
-            <marker date="1559609351345" expanded="true" signature="7567:7675" ph="..." />
-            <marker date="1559609351345" expanded="true" signature="7627:7650" ph="..." />
+            <marker date="1559628496895" expanded="true" signature="6101:6125" ph="..." />
+            <marker date="1559628496895" expanded="true" signature="7853:7952" ph="..." />
+            <marker date="1559628496895" expanded="true" signature="7913:7951" ph="..." />
           </folding>
         </state>
       </provider>
@@ -511,9 +499,9 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
-            <marker date="1559609351345" expanded="true" signature="5842:5866" ph="..." />
-            <marker date="1559609351345" expanded="true" signature="7567:7675" ph="..." />
-            <marker date="1559609351345" expanded="true" signature="7627:7650" ph="..." />
+            <marker date="1559628496895" expanded="true" signature="6101:6125" ph="..." />
+            <marker date="1559628496895" expanded="true" signature="7853:7952" ph="..." />
+            <marker date="1559628496895" expanded="true" signature="7913:7951" ph="..." />
           </folding>
         </state>
       </provider>
@@ -581,7 +569,7 @@
     <entry file="file://$USER_HOME$/anaconda/envs/cs20_tensorflow/lib/python3.6/site-packages/pennylane/optimize/gradient_descent.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="811">
-          <caret line="77" column="46" lean-forward="true" selection-start-line="77" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
+          <caret line="77" column="46" lean-forward="false" selection-start-line="77" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -638,13 +626,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/quantum_nn.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3889">
-          <caret line="51" column="0" lean-forward="false" selection-start-line="51" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
+        <state relative-caret-position="-240">
+          <caret line="150" column="9" lean-forward="false" selection-start-line="150" selection-start-column="4" selection-end-line="150" selection-end-column="9" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
-            <marker date="1559609351345" expanded="true" signature="5842:5866" ph="..." />
-            <marker date="1559609351345" expanded="true" signature="7567:7675" ph="..." />
-            <marker date="1559609351345" expanded="true" signature="7627:7650" ph="..." />
+            <marker date="1559628496895" expanded="true" signature="6101:6125" ph="..." />
+            <marker date="1559628496895" expanded="true" signature="7853:7952" ph="..." />
+            <marker date="1559628496895" expanded="true" signature="7913:7951" ph="..." />
           </folding>
         </state>
       </provider>

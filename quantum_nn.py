@@ -36,14 +36,15 @@ def compare_ground_truth_and_circuit(num_iterations, weights):
     for i in range(num_iterations):
         # Assume we're making sure we always get back a 0
         # First step is getting the corrupted Shor encdoing
-        ground_truth = reset_circuit(set_to_ones=True)[0]
+        ground_truth = reset_circuit()[0]
 
         print("\nGROUND TRUTH :%f" % ground_truth)
         # now round ground truth
-        ground_truth = int(round(ground_truth))
+        # ground_truth = int(round(ground_truth))
         if random.random() < 0.5:
-            print("-------")
-            flip_startbit()
+            print("FLIPPING BIT")
+            ground_truth = flip_startbit()
+            reset_circuit()
             ground_truth = (ground_truth + 1) % 2
 
         print("After rounding ground truth: %f" % ground_truth)
@@ -130,7 +131,7 @@ def reset_circuit(set_to_ones=False):
 
 
     #TODO: Figure out whether we are supposed to measure in the Pauli-Z axis or not. Might have to be X-axis?
-    return  qml.expval.PauliX(0), qml.expval.PauliX(1), qml.expval.PauliX(2), qml.expval.PauliX(3), qml.expval.PauliX(4), qml.expval.PauliX(5), qml.expval.PauliX(6), qml.expval.PauliX(7), qml.expval.PauliX(8), qml.expval.PauliX(9)
+    return  qml.expval.PauliZ(0), qml.expval.PauliZ(1), qml.expval.PauliZ(2), qml.expval.PauliZ(3), qml.expval.PauliZ(4), qml.expval.PauliZ(5), qml.expval.PauliZ(6), qml.expval.PauliZ(7), qml.expval.PauliZ(8), qml.expval.PauliZ(9)
 
 
 
@@ -144,7 +145,7 @@ def flip_startbit():
     qml.PauliX(wires=0)
 
     # Just return the value of the second qubit instead
-    return qml.expval.PauliX(wires=1)
+    return qml.expval.PauliZ(wires=0)
 
 
 def shor_encoding():
@@ -179,6 +180,8 @@ def shor_decoding_model(weights):
     output_wire = 9
     for i in range(9):
         first = i
+
+        #TODO: validate that this circuit can interpret both the logical 0 and logical 1 case
         qml.RX(weights[i], wires=first)
         qml.RY(weights[i+1], wires=first)
         qml.RZ(weights[i+2], wires=first)
@@ -198,7 +201,16 @@ def get_reference_zero_qbit():
     qml.RX(0.00, 11)
 
     #TODO: should this be a Pauli-Z rotation as well?
-    return qml.expval.PauliX(wires=11)
+    return qml.expval.PauliZ(wires=11)
+
+
+@qml.qnode(test_dev)
+def test_zeroes():
+    qml.PauliX(wires=0)
+    qml.PauliX(wires=0)
+
+    return qml.expval.PauliZ(wires=0)
+
 
 
 @qml.qnode(test_dev)
@@ -210,7 +222,7 @@ def get_circuit_decoding_output(weights):
     # entangle and measure the parity
     # wire 10 should have a blank 0 qbit that hasn't been touched yet. CNOT with the output bit
     qml.CNOT(wires=[10, 9])
-    return qml.expval.PauliX(wires=9)
+    return qml.expval.PauliZ(wires=9)
 
 
 
@@ -244,7 +256,7 @@ def shor_decoding_circuit(weights):
     #entangle and measure the parity
     # wire 10 should have a blank 0 qbit that hasn't been touched yet. CNOT with the output bit
     qml.CNOT(wires=[10, 9])
-    return qml.expval.PauliX(wires=9)
+    return qml.expval.PauliZ(wires=9)
 
 
 
@@ -254,20 +266,21 @@ def loss_function(weights):
     # Have shor_encoding prepare and also give back the true value of the bit
 
     # Get a blank slate for the working Shor bits
+
+
     ground_truth = reset_circuit()[0]
-    ground_truth = 0
-
-
     print("GROUND TRUTH :%f" % ground_truth)
     # now round ground truth
-    ground_truth = int(round(ground_truth))
+
+    assert(int(round(ground_truth)) == 0.0)
+    # ground_truth = int(round(ground_truth))
+
 
     # TODO: Ideally we'd like the qubit we are encoding to either 0 or 1. Problem is there are no if-statements in circuits smh
     # With random probability start with 1 as the ground truth bit
     if random.random() < 0.5:
         print("FLIPPING BIT")
-        flip_startbit()
-        ground_truth = 1
+        ground_truth = flip_startbit()
 
     print("After rounding ground truth: %f" % ground_truth)
 
@@ -284,15 +297,15 @@ def loss_function(weights):
     print("Recovered measurement:")
     print(measurement)
 
-    #TODO: validate this is the right thing to do here
-    print("loss value: %s" % str(np.abs(measurement - ground_truth)))
-    return np.abs(measurement - ground_truth)
+    #TODO: validate this is the right thing to do here. Another issue with training could just be a bad loss function
+    print("loss value: %s" % str( (ground_truth - measurement) ** 2))
+    return (ground_truth - measurement) ** 2
 
 
 def train(weights):
     # A training loop. Use GDO?
     # Construct our CNOt loss
-    alpha = 0.2
+    alpha = 0.4
     optimizer = GradientDescentOptimizer(alpha)
 
     #TODO: Ideally, we want to train encodings of logical 0 and logical 1.
@@ -301,7 +314,8 @@ def train(weights):
 
 
     # Optimize D, fix G
-    for it in range(400):
+    for it in range(1000):
+        print("Iteration %d" % it)
         weights = optimizer.step(loss_function, weights)
         cost = loss_function(weights)
         # if it % 1 == 0:
@@ -311,34 +325,34 @@ def train(weights):
     return weights
 
 
-
-
-
 ##############################################################
 
 
 if __name__ == "__main__":
-    eps = 1e-2
-    num_weights = 9 * 3 * 2
-    weights = np.array([0.0] + [0] * (num_weights-1)) + np.random.normal(scale=eps, size=[num_weights])
-    print("weights before")
-    print(weights)
-    print(weights.shape)
+    # eps = 1e-2
+    # num_weights = 9 * 3 * 2
+    # weights = np.array([0.0] + [0] * (num_weights-1)) + np.random.normal(scale=eps, size=[num_weights])
+    # print("weights before")
+    # print(weights)
+    # print(weights.shape)
+    #
+    # before_weights = np.copy(weights)
+    #
+    # weights = train(weights)
+    #
+    # print("weights after")
+    # print(weights)
+    #
+    # abs_diff = np.sum(np.abs(before_weights - weights))
+    # print("Total end weight diff: %f" % abs_diff)
 
-    before_weights = np.copy(weights)
-
-    weights = train(weights)
-
-    print("weights after")
-    print(weights)
-
-    abs_diff = np.sum(np.abs(before_weights - weights))
-    print("Total end weight diff: %f" % abs_diff)
-
-    save_weights(weights, "circuit_weights")
+    # save_weights(weights, "circuit_weights")
 
     # Other things if necessary
 
+    # test_flipp = test_zeroes()
+    # print("tested X flip: %f" % test_flipp)
+
 
     weights = load_weights("circuit_weights.npy")
-    compare_ground_truth_and_circuit(20, weights)
+    compare_ground_truth_and_circuit(100, weights)
