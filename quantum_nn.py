@@ -25,31 +25,33 @@ def load_weights(filename):
     return np.load(filename)
 
 
-
  # Compares the original shor encoding measurements with the ones from the learned circuit
 def compare_ground_truth_and_circuit(num_iterations, weights):
     accumulated_error = 0.0
 
     reference_zero = get_reference_zero_qbit()
 
-    print("reference zero: %f" % reference_zero)
+    print("Reference zero: %f" % reference_zero)
 
     for i in range(num_iterations):
         # Assume we're making sure we always get back a 0
         # First step is getting the corrupted Shor encdoing
-        ground_truth = reset_circuit()[0]
+        ground_truth = reset_circuit(set_to_ones=True)[0]
 
-        print("GROUND TRUTH :%f" % ground_truth)
+        print("\nGROUND TRUTH :%f" % ground_truth)
         # now round ground truth
         ground_truth = int(round(ground_truth))
-        print("After rounding ground truth: %f" % ground_truth)
         if random.random() < 0.5:
-            # print("FLIPPING BIT")
+            print("-------")
             flip_startbit()
+            ground_truth = (ground_truth + 1) % 2
+
+        print("After rounding ground truth: %f" % ground_truth)
+
 
         recovered_bit_label = get_circuit_decoding_output(weights)
 
-        accumulated_error += np.abs(reference_zero - recovered_bit_label)
+        accumulated_error += np.abs(ground_truth - recovered_bit_label)
         print("predicted label: %f" % recovered_bit_label)
 
         # reset
@@ -112,6 +114,10 @@ def reset_circuit(set_to_ones=False):
     qml.RX(0, wires=8)
     qml.RX(0, wires=9)
 
+    if set_to_ones:
+        print("Flipping a bit in the reset_circuit()")
+        qml.PauliX(wires=0)
+
     # qml.expval.PauliZ(0)
     # qml.expval.PauliZ(1)
     # qml.expval.PauliZ(2)
@@ -124,7 +130,7 @@ def reset_circuit(set_to_ones=False):
 
 
     #TODO: Figure out whether we are supposed to measure in the Pauli-Z axis or not. Might have to be X-axis?
-    return  qml.expval.PauliZ(0), qml.expval.PauliX(1), qml.expval.PauliX(2), qml.expval.PauliX(3), qml.expval.PauliX(4), qml.expval.PauliX(5), qml.expval.PauliX(6), qml.expval.PauliX(7), qml.expval.PauliX(8), qml.expval.PauliX(9)
+    return  qml.expval.PauliX(0), qml.expval.PauliX(1), qml.expval.PauliX(2), qml.expval.PauliX(3), qml.expval.PauliX(4), qml.expval.PauliX(5), qml.expval.PauliX(6), qml.expval.PauliX(7), qml.expval.PauliX(8), qml.expval.PauliX(9)
 
 
 
@@ -189,10 +195,10 @@ def shor_decoding_model(weights):
 def get_reference_zero_qbit():
 
     # qml.CNOT(wires=[11, 10])
-    qml.RZ(0.00, 11)
+    qml.RX(0.00, 11)
 
     #TODO: should this be a Pauli-Z rotation as well?
-    return qml.expval.PauliZ(wires=11)
+    return qml.expval.PauliX(wires=11)
 
 
 @qml.qnode(test_dev)
@@ -249,19 +255,22 @@ def loss_function(weights):
 
     # Get a blank slate for the working Shor bits
     ground_truth = reset_circuit()[0]
+    ground_truth = 0
 
 
     print("GROUND TRUTH :%f" % ground_truth)
     # now round ground truth
     ground_truth = int(round(ground_truth))
-    print("AFter rounding ground truth: %f" % ground_truth)
 
     # TODO: Ideally we'd like the qubit we are encoding to either 0 or 1. Problem is there are no if-statements in circuits smh
     # With random probability start with 1 as the ground truth bit
     if random.random() < 0.5:
-        # print("FLIPPING BIT")
+        print("FLIPPING BIT")
         flip_startbit()
         ground_truth = 1
+
+    print("After rounding ground truth: %f" % ground_truth)
+
 
     # print("entering shor decoding step")
     # if ground_truth == 1:
@@ -270,11 +279,14 @@ def loss_function(weights):
 
     measurement = shor_decoding_circuit(weights)
 
+    reset_circuit()
+
     print("Recovered measurement:")
     print(measurement)
 
     #TODO: validate this is the right thing to do here
-    return -(measurement + 1) / 2
+    print("loss value: %s" % str(np.abs(measurement - ground_truth)))
+    return np.abs(measurement - ground_truth)
 
 
 def train(weights):
@@ -289,13 +301,12 @@ def train(weights):
 
 
     # Optimize D, fix G
-    for it in range(200):
+    for it in range(400):
         weights = optimizer.step(loss_function, weights)
         cost = loss_function(weights)
         # if it % 1 == 0:
         print("Step {}: cost = {}".format(it + 1, cost))
         print("END STEP\n\n\n")
-        reset_circuit()
 
     return weights
 
@@ -307,24 +318,24 @@ def train(weights):
 
 
 if __name__ == "__main__":
-    # eps = 1e-2
-    # num_weights = 9 * 3 * 2
-    # weights = np.array([0.0] + [0] * (num_weights-1)) + np.random.normal(scale=eps, size=[num_weights])
-    # print("weights before")
-    # print(weights)
-    # print(weights.shape)
-    #
-    # before_weights = np.copy(weights)
-    #
-    # weights = train(weights)
-    #
-    # print("weights after")
-    # print(weights)
-    #
-    # abs_diff = np.sum(np.abs(before_weights - weights))
-    # print("Total end weight diff: %f" % abs_diff)
-    #
-    # save_weights(weights, "circuit_weights")
+    eps = 1e-2
+    num_weights = 9 * 3 * 2
+    weights = np.array([0.0] + [0] * (num_weights-1)) + np.random.normal(scale=eps, size=[num_weights])
+    print("weights before")
+    print(weights)
+    print(weights.shape)
+
+    before_weights = np.copy(weights)
+
+    weights = train(weights)
+
+    print("weights after")
+    print(weights)
+
+    abs_diff = np.sum(np.abs(before_weights - weights))
+    print("Total end weight diff: %f" % abs_diff)
+
+    save_weights(weights, "circuit_weights")
 
     # Other things if necessary
 
