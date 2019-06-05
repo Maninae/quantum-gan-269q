@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0f59acfc-495d-4c59-a807-e3c9ed5514e8" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/quantum_nn.py" afterPath="$PROJECT_DIR$/quantum_nn.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -17,11 +16,11 @@
       <file leaf-file-name="quantum_nn.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/quantum_nn.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="303">
-              <caret line="369" column="17" lean-forward="false" selection-start-line="369" selection-start-column="17" selection-end-line="369" selection-end-column="17" />
+            <state relative-caret-position="1107">
+              <caret line="352" column="48" lean-forward="false" selection-start-line="352" selection-start-column="48" selection-end-line="352" selection-end-column="48" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
-                <marker date="1559750110353" expanded="true" signature="11204:11677" ph="..." />
+                <marker date="1559764765182" expanded="true" signature="11288:11753" ph="..." />
               </folding>
             </state>
           </provider>
@@ -362,17 +361,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quantum_nn.py</url>
-          <line>358</line>
+          <line>360</line>
           <option name="timeStamp" value="34" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quantum_nn.py</url>
-          <line>360</line>
+          <line>362</line>
           <option name="timeStamp" value="35" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quantum_nn.py</url>
-          <line>409</line>
+          <line>411</line>
           <option name="timeStamp" value="36" />
         </line-breakpoint>
       </breakpoints>
@@ -387,7 +386,7 @@
           <caret line="34" column="29" lean-forward="true" selection-start-line="34" selection-start-column="29" selection-end-line="34" selection-end-column="29" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
-            <marker date="1559750110353" expanded="true" signature="11204:11677" ph="..." />
+            <marker date="1559764765182" expanded="true" signature="11288:11753" ph="..." />
           </folding>
         </state>
       </provider>
@@ -448,7 +447,7 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
-            <marker date="1559750110353" expanded="true" signature="11204:11677" ph="..." />
+            <marker date="1559764765182" expanded="true" signature="11288:11753" ph="..." />
           </folding>
         </state>
       </provider>
@@ -509,7 +508,7 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
-            <marker date="1559750110353" expanded="true" signature="11204:11677" ph="..." />
+            <marker date="1559764765182" expanded="true" signature="11288:11753" ph="..." />
           </folding>
         </state>
       </provider>
@@ -634,11 +633,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/quantum_nn.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="303">
-          <caret line="369" column="17" lean-forward="false" selection-start-line="369" selection-start-column="17" selection-end-line="369" selection-end-column="17" />
+        <state relative-caret-position="1107">
+          <caret line="352" column="48" lean-forward="false" selection-start-line="352" selection-start-column="48" selection-end-line="352" selection-end-column="48" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
-            <marker date="1559750110353" expanded="true" signature="11204:11677" ph="..." />
+            <marker date="1559764765182" expanded="true" signature="11288:11753" ph="..." />
           </folding>
         </state>
       </provider>
