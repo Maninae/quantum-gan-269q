@@ -143,17 +143,6 @@ def reset_circuit(set_to_ones=False):
         print("Flipping a bit in the reset_circuit()")
         qml.PauliX(wires=0)
 
-    # qml.expval.PauliZ(0)
-    # qml.expval.PauliZ(1)
-    # qml.expval.PauliZ(2)
-    # qml.expval.PauliZ(3)
-    # qml.expval.PauliZ(4)
-    # qml.expval.PauliZ(5)
-    # qml.expval.PauliZ(6)
-    # qml.expval.PauliZ(7)
-    # qml.expval.PauliZ(8)
-
-
     #TODO: Figure out whether we are supposed to measure in the Pauli-Z axis or not. Might have to be X-axis?
     return  qml.expval.PauliZ(0), qml.expval.PauliZ(1), qml.expval.PauliZ(2), qml.expval.PauliZ(3), qml.expval.PauliZ(4), qml.expval.PauliZ(5), qml.expval.PauliZ(6), qml.expval.PauliZ(7), qml.expval.PauliZ(8), qml.expval.PauliZ(9)
 
@@ -190,14 +179,29 @@ def shor_encoding():
     add_single_qubit_error()
 
 
-    # expectation_list = []
-    # return qml.expval.PauliZ(wires=0)
-    #
-    # for qbit in range(9):
-    #     expecatation_val = qml.expval.PauliZ(wires=qbit)
-    #     expectation_list.append(expecatation_val)
-    #
-    # return expectation_list
+
+def shor_decoding_model_traditional(weights):
+    assert weights.shape = (3,2)
+
+    for i in [0, 3, 6]:
+        qml.CNOT(wires=[i, i+1])
+        qml.CNOT(wires=[i, i+2])
+        qml.CCNOT(wires=[i+1, i+2, i])
+
+        # In the traditional Sho decoding circuit, there is an H gate here.
+        # See if these rotations can be learned to imitate a Hadamard gate
+        qml.RX(weights[i, 0], wires=i)
+        qml.RZ(weights[i, 1], wires=i)
+
+    qml.CNOT(wires=[0, 3])
+    qml.CNOT(wires=[0, 6])
+    qml.CCNOT(wires=[3, 6, 0])
+
+    # Output the qubit to wire 9
+    output_wire = 9
+    qml.CNOT(wires=[0, output_wire])
+
+
 
 
 def shor_decoding_model(weights):
@@ -279,7 +283,6 @@ def shor_decoding_circuit(weights):
     # correct_to_ground(ground_truth)
     shor_encoding()
 
-
     # We need to wrap ground_truth_qbit_value in a bigger function, like the pennylane notebook does.
     # The API for pennylane doesn't let us pass in any more parameters
     # So we can then pass it into the decoding circuit
@@ -289,10 +292,6 @@ def shor_decoding_circuit(weights):
 
     # Assume the decoding circuit has been run, and the output is on wire 9
     #  Create ground truth qubit on wire 0
-
-
-    # TODO: To reset wire 0 just measure it to fix it
-    # qml.expval.PauliZ(wires=10)
 
     # If the ground_truth bit is actually 1, then negate it so the later CNOT serves as a check that the output and original bit are the same?
     # if ground_truth == 1:
@@ -332,14 +331,8 @@ def loss_function(weights, as_probability=False):
         print("FLIPPING BIT")
         flip_startbit()
         ground_truth = 1.0
-
     print("After rounding ground truth: %f" % ground_truth)
 
-
-    # print("entering shor decoding step")
-    # if ground_truth == 1:
-    #     print("FLIPPED")
-    #     qml.PauliX(wires=0)
 
     measurement = shor_decoding_circuit(weights)
 
