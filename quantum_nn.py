@@ -343,8 +343,10 @@ def loss_function(weights, as_probability=False):
 
     #TODO: validate this is the right thing to do here. Another issue with training could just be a bad loss function
     if as_probability:
+        # Small epsiolon for numerical stabilty 
+        epsilon = 0.0001
         p = (measurement + 1) / 2
-        loss = np.log(p) if ground_truth == 1 else np.log(1. - p)
+        loss = np.log(p) if ground_truth == 1 else np.log(1. - p + epsilon)
     else:
         loss = (ground_truth - measurement) ** 2
 
@@ -410,7 +412,7 @@ if __name__ == "__main__":
 
     before_weights = np.copy(weights)
 
-    weights = train(weights, loss_function_probability)
+    weights = train(weights, loss_function_MSE)
 
     print("weights after")
     print(weights)
