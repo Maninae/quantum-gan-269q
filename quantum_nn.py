@@ -19,7 +19,9 @@ import matplotlib.pyplot as plt
 
 test_dev = qml.device('forest.qvm', device='12q-pyqvm', noise=False, shots=1000)
 ground_truth = 0
+
 recorded_loss_list = []
+recorded_measurement_list = []
 
 
 def pickle_loss_list():
@@ -353,8 +355,10 @@ def loss_function(weights, as_probability=False):
 
     if isinstance(loss, float):
         recorded_loss_list.append(loss)
+        recorded_measurement_list.append(measurement)
     else:
         recorded_loss_list.append(loss._value)
+        recorded_measurement_list.append(measurement._value)
 
     print("loss value: %s" % str(loss))
     return loss
@@ -374,11 +378,15 @@ def train(weights, loss_fn):
     # Optimize D, fix G
     for it in range(9000):
         print("Iteration %d" % it)
+        print("Step {}".format(it + 1))
+
         weights = optimizer.step(loss_fn, weights)
+        print("END STEP\n\n\n")
+
 
         # if it % 1 == 0:
-        print("Step {}".format(it + 1))
-        print("END STEP\n\n\n")
+
+        # if it % 10 == 0:
 
 
     # Save our recorded loss values
@@ -403,7 +411,7 @@ if __name__ == "__main__":
     # plot_loss()
 
 
-    nb_layers = 2
+    nb_layers = 5
     nb_qubits = 9
 
     #TODO: change back
