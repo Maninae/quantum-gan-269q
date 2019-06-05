@@ -9,6 +9,8 @@ from pyquil.api import WavefunctionSimulator
 from pennylane.ops import Hadamard, RX, CNOT
 
 import random
+import pickle
+import matplotlib.pyplot as plt
 
 
 
@@ -16,6 +18,23 @@ import random
 
 test_dev = qml.device('forest.qvm', device='12q-pyqvm', noise=False, shots=1000)
 ground_truth = 0
+recorded_loss_list = []
+
+
+def pickle_loss_list():
+    with open("recorded_loss.pkl", "wb") as f:
+        pickle.dump(recorded_loss_list, f)
+
+def plot_loss():
+    # Load the pickle file
+    loss_values = None
+    with open("recorded_loss.pkl", 'rb') as pickle_file:
+        loss_values = pickle.load(pickle_file)
+
+
+    # Matpolot lib it
+    plt.plot(loss_values)
+    plt.show()
 
 
 def save_weights(weights, filename):
@@ -47,7 +66,8 @@ def compare_ground_truth_and_circuit(num_iterations, weights):
             print("FLIPPING BIT")
             ground_truth = flip_startbit()
             reset_circuit()
-            ground_truth = (ground_truth + 1) % 2
+            # ground_truth = (ground_truth + 1) % 2
+            ground_truth = (-1) * ground_truth
 
         print("After rounding ground truth: %f" % ground_truth)
 
@@ -295,7 +315,6 @@ def loss_function_probability(weights):
 
 def loss_function(weights, as_probability=False):
     # Have shor_encoding prepare and also give back the true value of the bit
-
     # Get a blank slate for the working Shor bits
 
 
@@ -336,6 +355,11 @@ def loss_function(weights, as_probability=False):
     else:
         loss = (ground_truth - measurement) ** 2
 
+    if isinstance(loss, float):
+        recorded_loss_list.append(loss)
+    else:
+        recorded_loss_list.append(loss._value)
+
     print("loss value: %s" % str(loss))
     return loss
 
@@ -343,7 +367,7 @@ def loss_function(weights, as_probability=False):
 def train(weights, loss_fn):
     # A training loop. Use GDO?
     # Construct our CNOt loss
-    alpha = 0.01
+    alpha = 0.001
     optimizer = AdamOptimizer(alpha)
 
     #TODO: Ideally, we want to train encodings of logical 0 and logical 1.
@@ -352,12 +376,17 @@ def train(weights, loss_fn):
 
 
     # Optimize D, fix G
-    for it in range(1000):
+    for it in range(9000):
         print("Iteration %d" % it)
         weights = optimizer.step(loss_fn, weights)
+
         # if it % 1 == 0:
         print("Step {}".format(it + 1))
         print("END STEP\n\n\n")
+
+
+    # Save our recorded loss values
+    pickle_loss_list()
 
     return weights
 
@@ -375,9 +404,10 @@ if __name__ == "__main__":
 
     # test_flipp = test_zerotest_zeroees()
     # print("tested X flip: %f" % test_flipp)
+    # plot_loss()
 
 
-    nb_layers = 5
+    nb_layers = 2
     nb_qubits = 9
     weights = (np.pi / 3) * np.random.randn(nb_layers, nb_qubits, 2)
 
@@ -403,4 +433,5 @@ if __name__ == "__main__":
     # nb_layers = 5
     # nb_qubits = 9
     # weights = 0.1 * np.random.randn(nb_layers, nb_qubits, 2)
-    # compare_ground_truth_and_circuit(100, weights)
+    weights = np.load("circuit_weights.npy")
+    compare_ground_truth_and_circuit(100, weights)
