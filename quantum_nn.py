@@ -346,7 +346,7 @@ def loss_function(weights, as_probability=False):
         # Small epsiolon for numerical stabilty 
         epsilon = 0.0001
         p = (measurement + 1) / 2
-        loss = np.log(p) if ground_truth == 1 else np.log(1. - p + epsilon)
+        loss = -np.log(p) if ground_truth == 1 else -np.log(1. - p + epsilon)
     else:
         loss = (ground_truth - measurement) ** 2
 
