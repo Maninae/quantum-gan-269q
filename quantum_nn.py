@@ -3,7 +3,6 @@ import pennylane as qml
 from pennylane import numpy as np
 from pennylane.optimize import GradientDescentOptimizer, AdamOptimizer
 from pennylane.ops import Hadamard, RX, CNOT, PauliX, PauliZ
-from shor_code_model import real_shor_code
 from pyquil.api import WavefunctionSimulator
 
 from pennylane.ops import Hadamard, RX, CNOT
