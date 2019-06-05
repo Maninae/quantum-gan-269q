@@ -187,16 +187,16 @@ def shor_decoding_model_traditional(weights):
     for i in [0, 3, 6]:
         qml.CNOT(wires=[i, i+1])
         qml.CNOT(wires=[i, i+2])
-        qml.CCNOT(wires=[i+1, i+2, i])
+        CCNOT(wires=[i+1, i+2, i])
 
         # In the traditional Sho decoding circuit, there is an H gate here.
         # See if these rotations can be learned to imitate a Hadamard gate
-        qml.RX(weights[i, 0], wires=i)
-        qml.RZ(weights[i, 1], wires=i)
+        qml.RX(weights[i % 3, 0], wires=i)
+        qml.RZ(weights[i % 3, 1], wires=i)
 
     qml.CNOT(wires=[0, 3])
     qml.CNOT(wires=[0, 6])
-    qml.CCNOT(wires=[3, 6, 0])
+    CCNOT(wires=[3, 6, 0])
 
     # Output the qubit to wire 9
     output_wire = 9
@@ -289,7 +289,7 @@ def shor_decoding_circuit(weights):
     # So we can then pass it into the decoding circuit
 
     # Run the model/circuit
-    shor_decoding_model_traditional(weights)
+    shor_decoding_model(weights)
 
     # Assume the decoding circuit has been run, and the output is on wire 9
     #  Create ground truth qubit on wire 0
@@ -363,7 +363,7 @@ def loss_function(weights, as_probability=False):
 def train(weights, loss_fn):
     # A training loop. Use GDO?
     # Construct our CNOt loss
-    alpha = 0.001
+    alpha = 0.1
     optimizer = AdamOptimizer(alpha)
 
     #TODO: Ideally, we want to train encodings of logical 0 and logical 1.
@@ -407,7 +407,7 @@ if __name__ == "__main__":
     nb_qubits = 9
 
     #TODO: change back
-    weights = (np.pi / 3) * np.random.randn(3, 2)
+    weights = (np.pi / 3) * np.random.randn(nb_layers, nb_qubits, 2)
 
     print("weights before")
     print(weights)
