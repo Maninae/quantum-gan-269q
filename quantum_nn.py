@@ -3,7 +3,6 @@ import pennylane as qml
 from pennylane import numpy as np
 from pennylane.optimize import GradientDescentOptimizer, AdamOptimizer
 from pennylane.ops import Hadamard, RX, CNOT, PauliX, PauliZ
-from shor_code_model import real_shor_code
 from pyquil.api import WavefunctionSimulator
 
 from pennylane.ops import Hadamard, RX, CNOT
@@ -11,7 +10,7 @@ from pennylane_forest.ops import CCNOT
 
 import random
 import pickle
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 
 
@@ -36,8 +35,8 @@ def plot_loss():
 
 
     # Matpolot lib it
-    plt.plot(loss_values)
-    plt.show()
+    # plt.plot(loss_values)
+    # plt.show()
 
 
 def save_weights(weights, filename):
@@ -95,9 +94,10 @@ def add_single_qubit_error():
     bit error in a noisy channel.
     """
     qbit = random.randint(0, 8)
-    if random.random() < 0.3:
+    p = random.random()
+    if p < 0.33:
         qml.PauliX(qbit)
-    elif random.random() < 0.6:
+    elif p < 0.66:
         # TODO: figure out why phase flip doesn't appear to be changing
         # the expectation values -- maybe because we are measuring
         # in the Z basis?
@@ -181,6 +181,29 @@ def shor_encoding():
     # Simulate single qubit errors
     add_single_qubit_error()
 
+
+def shor_decoding_model_charissa_attempt(weights):
+    assert (weights.shape == (3,2))
+
+    for i in [0, 3, 6]:
+        qml.CNOT(wires=[i, i+1])
+        qml.CNOT(wires=[i, i+2])
+        CCNOT(wires=[i+1, i+2, i])
+
+        # In the traditional Shor decoding circuit, there is an H gate here.
+        # See if these rotations can be learned to imitate a Hadamard gate
+        qml.RX(weights[i % 3, 0], wires=i)
+        qml.RZ(weights[i % 3, 1], wires=i)
+
+    qml.CNOT(wires=[0, 3])
+    qml.CNOT(wires=[0, 6])
+    CCNOT(wires=[3, 6, 0])
+
+    # Output the qubit to wire 9
+    output_wire = 9
+    qml.CNOT(wires=[0, output_wire])
+    qml.CNOT(wires=[3, output_wire])
+    qml.CNOT(wires=[6, output_wire])
 
 
 def shor_decoding_model_traditional(weights):
@@ -291,7 +314,8 @@ def shor_decoding_circuit(weights):
     # So we can then pass it into the decoding circuit
 
     # Run the model/circuit
-    shor_decoding_model(weights)
+    # shor_decoding_model(weights) TODO
+    shor_decoding_model_charissa_attempt(weights)
 
     # Assume the decoding circuit has been run, and the output is on wire 9
     #  Create ground truth qubit on wire 0
@@ -423,6 +447,7 @@ if __name__ == "__main__":
 
     before_weights = np.copy(weights)
 
+    weights = (np.pi / 3) * np.random.randn(3, 2)
     weights = train(weights, loss_function_probability)
 
     print("weights after")
