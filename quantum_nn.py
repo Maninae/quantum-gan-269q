@@ -286,9 +286,14 @@ def shor_decoding_circuit(weights):
 
 
 
-# @qml.qnode(test_dev)
 
-def loss_function(weights):
+def loss_function_MSE(weights):
+    return loss_function(weights, as_probability=False)
+
+def loss_function_probability(weights):
+    return loss_function(weights, as_probability=True)
+
+def loss_function(weights, as_probability=False):
     # Have shor_encoding prepare and also give back the true value of the bit
 
     # Get a blank slate for the working Shor bits
@@ -325,14 +330,20 @@ def loss_function(weights):
     print(measurement)
 
     #TODO: validate this is the right thing to do here. Another issue with training could just be a bad loss function
-    print("loss value: %s" % str( (ground_truth - measurement) ** 2))
-    return (ground_truth - measurement) ** 2
+    if as_probability:
+        p = (measurement + 1) / 2
+        loss = np.log(p) if ground_truth == 1 else np.log(1. - p)
+    else:
+        loss = (ground_truth - measurement) ** 2
+
+    print("loss value: %s" % str(loss))
+    return loss
 
 
-def train(weights):
+def train(weights, loss_fn):
     # A training loop. Use GDO?
     # Construct our CNOt loss
-    alpha = 0.45
+    alpha = 0.01
     optimizer = AdamOptimizer(alpha)
 
     #TODO: Ideally, we want to train encodings of logical 0 and logical 1.
@@ -343,10 +354,9 @@ def train(weights):
     # Optimize D, fix G
     for it in range(1000):
         print("Iteration %d" % it)
-        weights = optimizer.step(loss_function, weights)
-        cost = loss_function(weights)
+        weights = optimizer.step(loss_fn, weights)
         # if it % 1 == 0:
-        print("Step {}: cost = {}".format(it + 1, cost))
+        print("Step {}".format(it + 1))
         print("END STEP\n\n\n")
 
     return weights
@@ -377,7 +387,7 @@ if __name__ == "__main__":
 
     before_weights = np.copy(weights)
 
-    weights = train(weights)
+    weights = train(weights, loss_function_probability)
 
     print("weights after")
     print(weights)
