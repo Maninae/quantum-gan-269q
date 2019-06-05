@@ -7,6 +7,7 @@ from shor_code_model import real_shor_code
 from pyquil.api import WavefunctionSimulator
 
 from pennylane.ops import Hadamard, RX, CNOT
+from pennylane_forest.ops import CCNOT
 
 import random
 import pickle
@@ -181,7 +182,7 @@ def shor_encoding():
 
 
 def shor_decoding_model_traditional(weights):
-    assert weights.shape = (3,2)
+    assert(weights.shape == (3,2))
 
     for i in [0, 3, 6]:
         qml.CNOT(wires=[i, i+1])
@@ -288,7 +289,7 @@ def shor_decoding_circuit(weights):
     # So we can then pass it into the decoding circuit
 
     # Run the model/circuit
-    shor_decoding_model(weights)
+    shor_decoding_model_traditional(weights)
 
     # Assume the decoding circuit has been run, and the output is on wire 9
     #  Create ground truth qubit on wire 0
@@ -404,7 +405,9 @@ if __name__ == "__main__":
 
     nb_layers = 2
     nb_qubits = 9
-    weights = (np.pi / 3) * np.random.randn(nb_layers, nb_qubits, 2)
+
+    #TODO: change back
+    weights = (np.pi / 3) * np.random.randn(3, 2)
 
     print("weights before")
     print(weights)
@@ -412,7 +415,7 @@ if __name__ == "__main__":
 
     before_weights = np.copy(weights)
 
-    weights = train(weights, loss_function_MSE)
+    weights = train(weights, loss_function_probability)
 
     print("weights after")
     print(weights)
