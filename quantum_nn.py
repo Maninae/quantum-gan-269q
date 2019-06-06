@@ -23,15 +23,16 @@ recorded_loss_list = []
 recorded_measurement_list = []
 
 
-def pickle_loss_list():
-    with open("recorded_loss.pkl", "wb") as f:
-        pickle.dump(recorded_loss_list, f)
+def pickle_list(list_obj, filename):
+    with open(filename, "wb") as f:
+        pickle.dump(list_obj, f)
 
-def plot_loss():
+def plot_loss(filename):
     # Load the pickle file
     loss_values = None
     with open("recorded_loss.pkl", 'rb') as pickle_file:
         loss_values = pickle.load(pickle_file)
+
 
 
     # Matpolot lib it
@@ -228,8 +229,6 @@ def shor_decoding_model_traditional(weights):
     qml.CNOT(wires=[0, output_wire])
 
 
-
-
 def shor_decoding_model(weights):
     nb_layers, nb_qubits, _ = weights.shape
     assert weights.shape[2] == 2
@@ -315,7 +314,7 @@ def shor_decoding_circuit(weights):
 
     # Run the model/circuit
     # shor_decoding_model(weights) TODO
-    shor_decoding_model_charissa_attempt(weights)
+    shor_decoding_model(weights)
 
     # Assume the decoding circuit has been run, and the output is on wire 9
     #  Create ground truth qubit on wire 0
@@ -400,21 +399,17 @@ def train(weights, loss_fn):
 
 
     # Optimize D, fix G
-    for it in range(9000):
+    for it in range(3000):
         print("Iteration %d" % it)
         print("Step {}".format(it + 1))
-
         weights = optimizer.step(loss_fn, weights)
         print("END STEP\n\n\n")
 
 
-        # if it % 1 == 0:
-
-        # if it % 10 == 0:
-
 
     # Save our recorded loss values
-    pickle_loss_list()
+    pickle_list(recorded_loss_list, "recorded_lost_list.pkl")
+    pickle_list(recorded_measurement_list, "recorded_measurment_list.pkl")
 
     return weights
 
@@ -432,37 +427,38 @@ if __name__ == "__main__":
 
     # test_flipp = test_zerotest_zeroees()
     # print("tested X flip: %f" % test_flipp)
-    # plot_loss()
-
-
-    nb_layers = 5
-    nb_qubits = 9
-
-    #TODO: change back
-    weights = (np.pi / 3) * np.random.randn(nb_layers, nb_qubits, 2)
-
-    print("weights before")
-    print(weights)
-    print(weights.shape)
-
-    before_weights = np.copy(weights)
-
-    weights = (np.pi / 3) * np.random.randn(3, 2)
-    weights = train(weights, loss_function_probability)
-
-    print("weights after")
-    print(weights)
-
-    abs_diff = np.sum(np.abs(before_weights - weights))
-    print("Total end weight diff: %f" % abs_diff)
-
-    save_weights(weights, "circuit_weights")
-
-    # Other things if necessary
+    plot_loss()
 
 
     # nb_layers = 5
     # nb_qubits = 9
-    # weights = 0.1 * np.random.randn(nb_layers, nb_qubits, 2)
-    weights = np.load("circuit_weights.npy")
-    compare_ground_truth_and_circuit(100, weights)
+    #
+    # #TODO: change back
+    # weights = (np.pi / 3) * np.random.randn(nb_layers, nb_qubits, 2)
+    #
+    # print("weights before")
+    # print(weights)
+    # print(weights.shape)
+    #
+    # before_weights = np.copy(weights)
+    #
+    # # weights = (np.pi / 3) * np.random.randn(3, 2)
+    # weights = train(weights, loss_function_probability)
+    #
+    # print("weights after")
+    # print(weights)
+    #
+    # abs_diff = np.sum(np.abs(before_weights - weights))
+    # print("Total end weight diff: %f" % abs_diff)
+    #
+    # save_weights(weights, "circuit_weights")
+    #
+    #
+    # # Other things if necessary
+    #
+    #
+    # # nb_layers = 5
+    # # nb_qubits = 9
+    # # weights = 0.1 * np.random.randn(nb_layers, nb_qubits, 2)
+    # weights = np.load("circuit_weights.npy")
+    # compare_ground_truth_and_circuit(100, weights)
