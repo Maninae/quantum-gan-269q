@@ -10,7 +10,7 @@ from pennylane_forest.ops import CCNOT
 
 import random
 import pickle
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 
 
@@ -30,14 +30,14 @@ def pickle_list(list_obj, filename):
 def plot_loss(filename):
     # Load the pickle file
     loss_values = None
-    with open("recorded_loss.pkl", 'rb') as pickle_file:
+    with open(filename, 'rb') as pickle_file:
         loss_values = pickle.load(pickle_file)
 
 
 
     # Matpolot lib it
-    # plt.plot(loss_values)
-    # plt.show()
+    plt.plot(loss_values)
+    plt.show()
 
 
 def save_weights(weights, filename):
@@ -390,7 +390,7 @@ def loss_function(weights, as_probability=False):
 def train(weights, loss_fn):
     # A training loop. Use GDO?
     # Construct our CNOt loss
-    alpha = 0.1
+    alpha = 0.01
     optimizer = AdamOptimizer(alpha)
 
     #TODO: Ideally, we want to train encodings of logical 0 and logical 1.
@@ -408,8 +408,8 @@ def train(weights, loss_fn):
 
 
     # Save our recorded loss values
-    pickle_list(recorded_loss_list, "recorded_lost_list.pkl")
-    pickle_list(recorded_measurement_list, "recorded_measurment_list.pkl")
+    pickle_list(recorded_loss_list, "3k_regular_circuit_0_001_prob_loss.pkl")
+    pickle_list(recorded_measurement_list, "3k_regular_circuit_0_001_prob_measurment_list.pkl")
 
     return weights
 
@@ -427,32 +427,34 @@ if __name__ == "__main__":
 
     # test_flipp = test_zerotest_zeroees()
     # print("tested X flip: %f" % test_flipp)
-    plot_loss()
+    # plot_loss("5k_prob_small_LR_02_recorded_measurment_list.pkl")
 
 
-    # nb_layers = 5
-    # nb_qubits = 9
+    nb_layers = 3
+    nb_qubits = 9
     #
-    # #TODO: change back
-    # weights = (np.pi / 3) * np.random.randn(nb_layers, nb_qubits, 2)
+    #TODO: change back line below for regular, non-traditional model
+    weights = (np.pi / 3) * np.random.randn(nb_layers, nb_qubits, 2)
+    # weights = (np.pi / 3) * np.random.randn(3,2)
     #
-    # print("weights before")
-    # print(weights)
-    # print(weights.shape)
     #
-    # before_weights = np.copy(weights)
-    #
-    # # weights = (np.pi / 3) * np.random.randn(3, 2)
-    # weights = train(weights, loss_function_probability)
-    #
-    # print("weights after")
-    # print(weights)
-    #
-    # abs_diff = np.sum(np.abs(before_weights - weights))
-    # print("Total end weight diff: %f" % abs_diff)
-    #
-    # save_weights(weights, "circuit_weights")
-    #
+    print("weights before")
+    print(weights)
+    print(weights.shape)
+
+    before_weights = np.copy(weights)
+
+    # weights = (np.pi / 3) * np.random.randn(3, 2)
+    weights = train(weights, loss_function_probability)
+
+    print("weights after")
+    print(weights)
+
+    abs_diff = np.sum(np.abs(before_weights - weights))
+    print("Total end weight diff: %f" % abs_diff)
+
+    save_weights(weights, "circuit_weights")
+
     #
     # # Other things if necessary
     #
@@ -461,4 +463,4 @@ if __name__ == "__main__":
     # # nb_qubits = 9
     # # weights = 0.1 * np.random.randn(nb_layers, nb_qubits, 2)
     # weights = np.load("circuit_weights.npy")
-    # compare_ground_truth_and_circuit(100, weights)
+    compare_ground_truth_and_circuit(100, weights)

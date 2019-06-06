@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0f59acfc-495d-4c59-a807-e3c9ed5514e8" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/quantum_nn.py" afterPath="$PROJECT_DIR$/quantum_nn.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -17,8 +16,8 @@
       <file leaf-file-name="quantum_nn.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/quantum_nn.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="200">
-              <caret line="29" column="22" lean-forward="false" selection-start-line="29" selection-start-column="22" selection-end-line="29" selection-end-column="22" />
+            <state relative-caret-position="56">
+              <caret line="434" column="5" lean-forward="true" selection-start-line="434" selection-start-column="5" selection-end-line="434" selection-end-column="5" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -119,14 +118,10 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>after rounding</find>
-      <find>reset_cir</find>
-      <find>set_to_ones</find>
       <find>reset</find>
       <find>reset_circ</find>
       <find>real</find>
       <find>flip_start</find>
-      <find>shor_decoding</find>
       <find>f</find>
       <find>test_zeroe</find>
       <find>Recovered</find>
@@ -149,6 +144,10 @@
       <find>Flipping bit</find>
       <find>iterations</find>
       <find>shor_decoding_model</find>
+      <find>shor_decoding_model_traditional</find>
+      <find>shor_decoding_mod</find>
+      <find>traditional</find>
+      <find>shor_decoding</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -619,8 +618,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/quantum_nn.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="29" column="22" lean-forward="false" selection-start-line="29" selection-start-column="22" selection-end-line="29" selection-end-column="22" />
+        <state relative-caret-position="56">
+          <caret line="434" column="5" lean-forward="true" selection-start-line="434" selection-start-column="5" selection-end-line="434" selection-end-column="5" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
