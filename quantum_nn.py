@@ -10,7 +10,7 @@ from pennylane_forest.ops import CCNOT
 
 import random
 import pickle
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 
 
@@ -30,14 +30,16 @@ def pickle_list(list_obj, filename):
 def plot_loss(filename):
     # Load the pickle file
     loss_values = None
-    with open("recorded_loss.pkl", 'rb') as pickle_file:
+    with open(filename, 'rb') as pickle_file:
         loss_values = pickle.load(pickle_file)
 
-
-
     # Matpolot lib it
-    # plt.plot(loss_values)
-    # plt.show()
+    plt.plot(loss_values)
+    plt.xlabel("Iteration #")
+    plt.ylabel("MSE Loss")
+    plt.title("Shor-inspired Model Loss with lr=0.01")
+    plt.savefig(filename[:-4] + ".png")
+    plt.show()
 
 
 def save_weights(weights, filename):
@@ -120,18 +122,9 @@ def hadamard_list(qbit_list):
 
 @qml.qnode(test_dev)
 def reset_circuit(set_to_ones=False):
-
-    #TODO: Ideally change this to reset all the qbits. Currently having issues with passing a parameter to this function
-    # for i in range(9):
-    #     qml.PauliX(wires=i)
-    #
-    # val = None
-    # for i in reversed(range(9)):
-    #     if i == 0:
-    #         val = qml.expval.PauliX(i)
-    #     else:
-    #          qml.expval.PauliX(i)
-
+    """
+    Used in loss_function, so this doesn't have to be a qnode.
+    """
     qml.RX(0, wires=0)
     qml.RX(0, wires=1)
     qml.RX(0, wires=2)
@@ -148,7 +141,7 @@ def reset_circuit(set_to_ones=False):
         qml.PauliX(wires=0)
 
     #TODO: Figure out whether we are supposed to measure in the Pauli-Z axis or not. Might have to be X-axis?
-    return  qml.expval.PauliZ(0), qml.expval.PauliZ(1), qml.expval.PauliZ(2), qml.expval.PauliZ(3), qml.expval.PauliZ(4), qml.expval.PauliZ(5), qml.expval.PauliZ(6), qml.expval.PauliZ(7), qml.expval.PauliZ(8), qml.expval.PauliZ(9)
+    return qml.expval.PauliZ(0), qml.expval.PauliZ(1), qml.expval.PauliZ(2), qml.expval.PauliZ(3), qml.expval.PauliZ(4), qml.expval.PauliZ(5), qml.expval.PauliZ(6), qml.expval.PauliZ(7), qml.expval.PauliZ(8), qml.expval.PauliZ(9)
 
 
 
@@ -184,7 +177,7 @@ def shor_encoding():
 
 
 def shor_decoding_model_charissa_attempt(weights):
-    assert (weights.shape == (3,2))
+    assert (weights.shape == (2,))
 
     for i in [0, 3, 6]:
         qml.CNOT(wires=[i, i+1])
@@ -193,8 +186,8 @@ def shor_decoding_model_charissa_attempt(weights):
 
         # In the traditional Shor decoding circuit, there is an H gate here.
         # See if these rotations can be learned to imitate a Hadamard gate
-        qml.RX(weights[i % 3, 0], wires=i)
-        qml.RZ(weights[i % 3, 1], wires=i)
+        qml.RX(weights[0], wires=i)
+        qml.RZ(weights[1], wires=i)
 
     qml.CNOT(wires=[0, 3])
     qml.CNOT(wires=[0, 6])
@@ -207,8 +200,9 @@ def shor_decoding_model_charissa_attempt(weights):
     qml.CNOT(wires=[6, output_wire])
 
 
+
 def shor_decoding_model_traditional(weights):
-    assert(weights.shape == (3,2))
+    assert(weights.shape == (3,))
 
     for i in [0, 3, 6]:
         qml.CNOT(wires=[i, i+1])
@@ -217,8 +211,9 @@ def shor_decoding_model_traditional(weights):
 
         # In the traditional Sho decoding circuit, there is an H gate here.
         # See if these rotations can be learned to imitate a Hadamard gate
-        qml.RX(weights[i % 3, 0], wires=i)
-        qml.RZ(weights[i % 3, 1], wires=i)
+        qml.RZ(weights[0], wires=i)
+        qml.RX(weights[1], wires=i)
+        qml.RZ(weights[2], wires=i)
 
     qml.CNOT(wires=[0, 3])
     qml.CNOT(wires=[0, 6])
@@ -227,6 +222,8 @@ def shor_decoding_model_traditional(weights):
     # Output the qubit to wire 9
     output_wire = 9
     qml.CNOT(wires=[0, output_wire])
+
+
 
 
 def shor_decoding_model(weights):
@@ -252,22 +249,6 @@ def shor_decoding_model(weights):
     qml.CNOT(wires=[8, output_wire])
 
 
-    """
-        first = i
-
-        #TODO: validate that this circuit can interpret both the logical 0 and logical 1 case
-        qml.RX(weights[i], wires=first)
-        qml.RY(weights[i+1], wires=first)
-        qml.RZ(weights[i+2], wires=first)
-
-        qml.CNOT(wires=[first, output_wire])
-
-        qml.RX(weights[i+3], wires=output_wire)
-        qml.RY(weights[i+4], wires=output_wire)
-        qml.RZ(weights[i+5], wires=output_wire)
-        """
-
-
 
 @qml.qnode(test_dev)
 def get_reference_zero_qbit():
@@ -289,10 +270,13 @@ def test_zeroes():
 
 
 @qml.qnode(test_dev)
-def get_circuit_decoding_output(weights):
+def get_circuit_decoding_output(weights, model_fn=shor_decoding_model):
+    """
+    Used only in compare_ground_truth_and_circuit.
+    """
     # First apply the shor encoding to get the noisy 9 bits
     shor_encoding()
-    shor_decoding_model(weights)
+    model_fn(weights)
 
     # entangle and measure the parity
     # wire 10 should have a blank 0 qbit that hasn't been touched yet. CNOT with the output bit
@@ -302,33 +286,15 @@ def get_circuit_decoding_output(weights):
 
 
 @qml.qnode(test_dev)
-def shor_decoding_circuit(weights):
-
-    # Flip so the qbit is set to ground truth
-    # correct_to_ground(ground_truth)
-    shor_encoding()
-
-    # We need to wrap ground_truth_qbit_value in a bigger function, like the pennylane notebook does.
-    # The API for pennylane doesn't let us pass in any more parameters
-    # So we can then pass it into the decoding circuit
-
+def shor_decoding_circuit(weights, model_fn):
+    """
+    Purely used inside the loss_function.
+    """
     # Run the model/circuit
-    # shor_decoding_model(weights) TODO
-    shor_decoding_model(weights)
-
-    # Assume the decoding circuit has been run, and the output is on wire 9
-    #  Create ground truth qubit on wire 0
-
-    # If the ground_truth bit is actually 1, then negate it so the later CNOT serves as a check that the output and original bit are the same?
-    # if ground_truth == 1:
-    #     qml.PauliX(9)
-
-    #TODO: verify this correct to do
-    #entangle and measure the parity
-    # wire 10 should have a blank 0 qbit that hasn't been touched yet. CNOT with the output bit
-    # qml.CNOT(wires=[10, 9])
+    shor_encoding()
+    model_fn(weights)
     return qml.expval.PauliZ(wires=9)
-
+    
 
 
 
@@ -338,18 +304,24 @@ def loss_function_MSE(weights):
 def loss_function_probability(weights):
     return loss_function(weights, as_probability=True)
 
+
+
+@qml.qnode(test_dev)
+def encode_and_decode():
+    shor_encoding()
+    # shor_decoding_model(weights)  # Tried to refactor, but bug upon passing in model as kwarg
+    shor_decoding_model_traditional(weights)
+    measurement = qml.expval.PauliZ(wires=9)
+    return measurement
+
 def loss_function(weights, as_probability=False):
     # Have shor_encoding prepare and also give back the true value of the bit
     # Get a blank slate for the working Shor bits
 
 
     ground_truth = reset_circuit()[0]
-    print("GROUND TRUTH :%f" % ground_truth)
-    # now round ground truth
-
+    print("GROUND TRUTH :{}".format(ground_truth))
     assert(int(round(ground_truth)) == -1.0)
-    # ground_truth = int(round(ground_truth))
-
 
     # TODO: Ideally we'd like the qubit we are encoding to either 0 or 1. Problem is there are no if-statements in circuits smh
     # With random probability start with 1 as the ground truth bit
@@ -357,10 +329,9 @@ def loss_function(weights, as_probability=False):
         print("FLIPPING BIT")
         flip_startbit()
         ground_truth = 1.0
-    print("After rounding ground truth: %f" % ground_truth)
+    print("After [maybe] flipping, ground truth: %f" % ground_truth)
 
-
-    measurement = shor_decoding_circuit(weights)
+    measurement = encode_and_decode()
 
     reset_circuit()
 
@@ -370,9 +341,9 @@ def loss_function(weights, as_probability=False):
     #TODO: validate this is the right thing to do here. Another issue with training could just be a bad loss function
     if as_probability:
         # Small epsiolon for numerical stabilty 
-        epsilon = 0.0001
+        epsilon = 0.000001
         p = (measurement + 1) / 2
-        loss = -np.log(p) if ground_truth == 1 else -np.log(1. - p + epsilon)
+        loss = -np.log(p + epsilon) if (ground_truth == 1) else -np.log(1. - p + epsilon)
     else:
         loss = (ground_truth - measurement) ** 2
 
@@ -387,29 +358,27 @@ def loss_function(weights, as_probability=False):
     return loss
 
 
-def train(weights, loss_fn):
+def train(weights, loss_fn, pickle_suffix=""):
     # A training loop. Use GDO?
     # Construct our CNOt loss
-    alpha = 0.1
+    alpha = 0.01
     optimizer = AdamOptimizer(alpha)
 
     #TODO: Ideally, we want to train encodings of logical 0 and logical 1.
     # This has been tricky to figure out in terms of PennyLane QNode restrictions.
     # A possable work around is to to have two different optimizers. One for logical 0 and another for logical 1
 
-
     # Optimize D, fix G
-    for it in range(3000):
+    for it in range(15000):
         print("Iteration %d" % it)
         print("Step {}".format(it + 1))
         weights = optimizer.step(loss_fn, weights)
         print("END STEP\n\n\n")
 
 
-
     # Save our recorded loss values
-    pickle_list(recorded_loss_list, "recorded_lost_list.pkl")
-    pickle_list(recorded_measurement_list, "recorded_measurment_list.pkl")
+    pickle_list(recorded_loss_list, "logs/recorded_loss_list_%s.pkl" % pickle_suffix)
+    pickle_list(recorded_measurement_list, "logs/recorded_measurment_list_%s.pkl" % pickle_suffix)
 
     return weights
 
@@ -418,36 +387,24 @@ def train(weights, loss_fn):
 
 
 if __name__ == "__main__":
-    # Old way of doing weight initialization
-    # eps = 1e-2
-    # num_weights = 9 * 3 * 2
-    # weights = np.array([0.0] + [0] * (num_weights-1)) + np.random.normal(scale=eps, size=[num_weights])
+    
+    ##################################################
+    #      Training 2 parameters to learn H gate     #
+    #         shor_decoding_model_traditional()      #
+    ##################################################
+    weights = (np.pi / 3) * np.random.randn(3)
+    print(type(weights))
+    
+    weights = train(weights, 
+                    loss_function_MSE,
+                    pickle_suffix="0605_1408_traditional")
+    
+
+    plot_loss("logs/recorded_loss_list_0605_1408_traditional.pkl")
 
 
 
-    # test_flipp = test_zerotest_zeroees()
-    # print("tested X flip: %f" % test_flipp)
-    plot_loss()
 
-
-    # nb_layers = 5
-    # nb_qubits = 9
-    #
-    # #TODO: change back
-    # weights = (np.pi / 3) * np.random.randn(nb_layers, nb_qubits, 2)
-    #
-    # print("weights before")
-    # print(weights)
-    # print(weights.shape)
-    #
-    # before_weights = np.copy(weights)
-    #
-    # # weights = (np.pi / 3) * np.random.randn(3, 2)
-    # weights = train(weights, loss_function_probability)
-    #
-    # print("weights after")
-    # print(weights)
-    #
     # abs_diff = np.sum(np.abs(before_weights - weights))
     # print("Total end weight diff: %f" % abs_diff)
     #
@@ -455,10 +412,5 @@ if __name__ == "__main__":
     #
     #
     # # Other things if necessary
-    #
-    #
-    # # nb_layers = 5
-    # # nb_qubits = 9
-    # # weights = 0.1 * np.random.randn(nb_layers, nb_qubits, 2)
-    # weights = np.load("circuit_weights.npy")
     # compare_ground_truth_and_circuit(100, weights)
+    
