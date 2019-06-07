@@ -379,7 +379,6 @@ def train(weights, loss_fn, pickle_suffix=""):
     # Save our recorded loss values
     pickle_list(recorded_loss_list, "logs/recorded_loss_list_%s.pkl" % pickle_suffix)
     pickle_list(recorded_measurement_list, "logs/recorded_measurment_list_%s.pkl" % pickle_suffix)
-
     return weights
 
 
@@ -403,14 +402,34 @@ if __name__ == "__main__":
     plot_loss("logs/recorded_loss_list_0605_1408_traditional.pkl")
 
 
-
-
     # abs_diff = np.sum(np.abs(before_weights - weights))
     # print("Total end weight diff: %f" % abs_diff)
     #
     # save_weights(weights, "circuit_weights")
     #
+    print("weights before")
+    print(weights)
+    print(weights.shape)
+
+    before_weights = np.copy(weights)
+
+    # weights = (np.pi / 3) * np.random.randn(3, 2)
+    weights = train(weights, loss_function_probability)
+
+    print("weights after")
+    print(weights)
+
+    abs_diff = np.sum(np.abs(before_weights - weights))
+    print("Total end weight diff: %f" % abs_diff)
+
+    save_weights(weights, "circuit_weights")
+
     #
     # # Other things if necessary
-    # compare_ground_truth_and_circuit(100, weights)
-    
+    #
+    #
+    # # nb_layers = 5
+    # # nb_qubits = 9
+    # # weights = 0.1 * np.random.randn(nb_layers, nb_qubits, 2)
+    # weights = np.load("circuit_weights.npy")
+    compare_ground_truth_and_circuit(100, weights)
